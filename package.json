@@ -1,0 +1,40 @@
+{
+  "name": "basic-nodejs-express-graphql-sequelize-setup",
+  "version": "1.0.0",
+  "description": "- Sets up the nodejs project with express, postres, sequelize, graphql",
+  "main": "app.js",
+  "scripts": {
+    "start:dev": "nodemon --exec babel-node src/app.js",
+    "migration": "sequelize db:migrate",
+    "undo:migration": "sequelize db:migrate:undo:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/habinezadalvan/Basic-nodejs-express-graphql-sequelize-setup.git"
+  },
+  "author": "christian habineza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/habinezadalvan/Basic-nodejs-express-graphql-sequelize-setup/issues"
+  },
+  "homepage": "https://github.com/habinezadalvan/Basic-nodejs-express-graphql-sequelize-setup#readme",
+  "dependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "apollo-server-express": "^2.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^14.6.0",
+    "pg": "^7.18.2",
+    "pg-hstore": "^2.3.3",
+    "postgres": "^1.0.2",
+    "sequelize": "^5.21.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "sequelize-cli": "^5.5.1",
+    "sqlite3": "^4.1.1"
+  }
+}
