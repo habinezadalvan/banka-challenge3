@@ -1,0 +1,17 @@
+{
+    "testMatch":[ "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)" ],
+    "coverageReporters": ["json", "lcov",  "text"],
+    "coverageThreshold": {
+        "global": {
+            "branches": 50,
+            "functions": 90,
+            "lines": 90,
+            "statements": 90
+        }
+    },
+    "modulePaths": ["<rootDir>/src/"],
+    "testPathIgnorePatterns":[
+        "<rootDir>/src/sequelize/*", 
+        "<rootDir>/src/logging/*"
+    ]
+}
