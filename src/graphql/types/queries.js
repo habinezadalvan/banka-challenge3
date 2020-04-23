@@ -5,4 +5,4 @@ export const queries = gql`
     type Query {
         users: [User!]!
     }
-`
+`;
