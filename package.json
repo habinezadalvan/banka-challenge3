@@ -9,6 +9,7 @@
     "undo:migration": "sequelize db:migrate:undo:all",
     "seeds": "sequelize db:seed:all",
     "undo:seeds": "sequelize db:seed:undo:all",
+    "lint": "eslint .",
     "test": "jest --coverage",
     "pretest": "NODE_ENV=test yarn undo:migration && NODE_ENV=test yarn migration  && NODE_ENV=test yarn undo:seeds && NODE_ENV=test yarn seeds"
   },
@@ -38,9 +39,22 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "husky": "^4.2.5",
     "jest": "^25.4.0",
+    "lint-staged": "^10.1.7",
     "nodemon": "^2.0.2",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.1"
+  },
+  "lint-staged": {
+    "src/*": "yarn lint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 
 export const userType = gql`
     type User {
@@ -11,4 +11,4 @@ export const userType = gql`
         bio: String
         avatar: String
     }
-`
+`;
