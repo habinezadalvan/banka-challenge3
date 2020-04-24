@@ -1,4 +1,3 @@
-import resolver from './user.resolver';
-import { createUser } from './user.resolver.mutation';
+import { userResolver } from './user.resolver';
 
-export const resolvers = [resolver, createUser];
+export const resolvers = [userResolver];
