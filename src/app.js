@@ -6,6 +6,7 @@ import winston from 'winston';
 import { typeDefs } from './graphql/types';
 import { resolvers } from './graphql/resolvers';
 import { logger } from './logging/config';
+import './db/connectDb';
 
 logger();
 

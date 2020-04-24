@@ -1,32 +1,20 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
 
-module.exports = {
-  development: {
-    username: process.env.USER_NAME,
-    password: process.env.PASSWORD,
-    database: process.env.DB,
-    host: '127.0.0.1',
-    port: process.env.PORT_NUMBER,
-    dialect: 'postgres',
-    operatorsAliases: false,
-    logging: false,
-  },
-  test: {
-    username: process.env.USER_NAME,
-    password: process.env.PASSWORD,
-    database: process.env.TEST_DB,
-    host: '127.0.0.1',
-    port: process.env.PORT_NUMBER,
-    dialect: 'postgres',
-    operatorsAliases: false,
-  },
-  production: {
-    username: process.env.USER_NAME,
-    password: process.env.PASSWORD,
-    database: process.env.DB,
-    host: '127.0.0.1',
-    port: process.env.PORT_NUMBER,
-    dialect: 'postgres',
-    operatorsAliases: false,
-  },
+dotenv.config();
+
+module.exports.development = {
+  dialect: 'postgres',
+  seederStorage: 'sequelize',
+  url: process.env.DB_URL,
+};
+
+module.exports.production = {
+  dialect: 'postgres',
+  url: process.env.DB_URL,
+};
+
+module.exports.test = {
+  dialest: 'postgres',
+  seederStorage: 'sequelize',
+  url: process.env.TEST_DB_URL,
 };
