@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-unresolved
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import winston from 'winston';
-import { typeDefs } from './graphql/types';
+import { typeDefs } from './graphql/typesDefs';
 import { resolvers } from './graphql/resolvers';
 import { logger } from './logging/config';
 import './db/connectDb';

@@ -1,6 +1,8 @@
+import winston from 'winston';
+import models from '../../sequelize/models';
 import { GetUsers } from '../../services/user.service';
 
-const userResolver = {
+export const userResolver = {
   Query: {
     users: async () => {
       try {
@@ -10,6 +12,30 @@ const userResolver = {
       }
     },
   },
+  Mutation: {
+    addUser: (_, {
+      firstName,
+      lastName,
+      userName,
+      email, password, avatar, roleId, positionId, userPositionStatusId, savingsId,
+    }) => {
+      try {
+        const user = models.User.create({
+          firstName,
+          lastName,
+          userName,
+          email,
+          password,
+          avatar,
+          roleId,
+          positionId,
+          userPositionStatusId,
+          savingsId,
+        });
+        return user;
+      } catch (err) {
+        return winston.error('err -----', err);
+      }
+    },
+  },
 };
-
-export default userResolver;

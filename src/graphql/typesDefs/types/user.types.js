@@ -8,7 +8,11 @@ export const userType = gql`
         username: String!
         email: String!
         password: String!
-        bio: String
         avatar: String
+        roleId: Number!
+        positionId: Number!
+        userPositionStatusId: Number!
+        savingsId: Number
+        accountStatus: String
     }
 `;
