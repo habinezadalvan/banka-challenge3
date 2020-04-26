@@ -14,7 +14,10 @@ export const userResolver = {
   },
   Mutation: {
     addUser: (_, {
-      firstName, lastName, userName, email, password, bio, avatar,
+      firstName,
+      lastName,
+      userName,
+      email, password, avatar, roleId, positionId, userPositionStatusId, savingsId,
     }) => {
       try {
         const user = models.User.create({
@@ -23,8 +26,11 @@ export const userResolver = {
           userName,
           email,
           password,
-          bio,
           avatar,
+          roleId,
+          positionId,
+          userPositionStatusId,
+          savingsId,
         });
         return user;
       } catch (err) {

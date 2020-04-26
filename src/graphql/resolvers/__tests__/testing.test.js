@@ -7,7 +7,12 @@ const user = {
   userName: 'habinezadalvan',
   email: 'habineza@gmail.com',
   password: 'hashedpassword',
+  phoneNo: '+25030393944',
   avatar: 'image',
+  roleId: 1,
+  positionId: 1,
+  userPositionStatusId: 1,
+  savingsId: 1,
 };
 describe('My Test Suite', () => {
   beforeAll(async () => {
