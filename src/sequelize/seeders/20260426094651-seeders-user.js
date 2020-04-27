@@ -4,7 +4,7 @@ module.exports = {
     lastName: 'Doe',
     email: 'example@example.com',
     userName: 'johndoe',
-    password: 'thisisit',
+    password: '$2a$10$DY/BslOVgLFnDmSC1706m.5uXVqvTb2N3sUdYOtHS4bEHBqE0X/5K',
     phoneNo: '+230494484475',
     avatar: 'image',
     roleId: 1,
