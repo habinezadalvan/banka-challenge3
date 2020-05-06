@@ -1,41 +1,14 @@
-import winston from 'winston';
-import models from '../../sequelize/models';
-import { GetUsers } from '../../services/user.service';
+import { User } from '../../services/user.service';
+import { generalValidator } from '../../helpers/general.validator';
+import { loginSchema } from '../../utils/schemas/user.schemas';
 
 export const userResolver = {
-  Query: {
-    users: async () => {
-      try {
-        return GetUsers.getAllUsers();
-      } catch (err) {
-        throw err.message;
-      }
-    },
-  },
   Mutation: {
-    addUser: (_, {
-      firstName,
-      lastName,
-      userName,
-      email, password, avatar, roleId, positionId, userPositionStatusId, savingsId,
-    }) => {
-      try {
-        const user = models.User.create({
-          firstName,
-          lastName,
-          userName,
-          email,
-          password,
-          avatar,
-          roleId,
-          positionId,
-          userPositionStatusId,
-          savingsId,
-        });
-        return user;
-      } catch (err) {
-        return winston.error('err -----', err);
-      }
+    userLogin: async (_, { input }) => {
+      generalValidator(input, loginSchema);
+      const loggingIn = new User(input);
+      const token = await loggingIn.login();
+      return { token };
     },
   },
 };

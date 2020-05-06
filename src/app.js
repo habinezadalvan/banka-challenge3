@@ -9,7 +9,13 @@ import './db/connectDb';
 
 logger();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    token: req.headers.authorization,
+  }),
+});
 
 const app = express();
 app.use(cors());

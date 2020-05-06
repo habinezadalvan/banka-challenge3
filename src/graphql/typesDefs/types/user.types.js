@@ -9,10 +9,18 @@ export const userType = gql`
         email: String!
         password: String!
         avatar: String
-        roleId: Number!
-        positionId: Number!
-        userPositionStatusId: Number!
-        savingsId: Number
+        roleId: Int!
+        positionId: Int!
+        userPositionStatusId: Int!
+        savingsId: Int
         accountStatus: String
+        token: Token
+    }
+    input LoginInput {
+        email: String!
+        password: String!
+    }
+    type Token {
+        token: String
     }
 `;
