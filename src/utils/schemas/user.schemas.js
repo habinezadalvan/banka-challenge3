@@ -17,3 +17,18 @@ export const createUserSchema = Joi.object().keys({
   roleId: Joi.number(),
   phoneNo: Joi.string(),
 });
+
+export const updateUserSchema = Joi.object().keys({
+  firstName: Joi.string().trim(),
+  lastName: Joi.string().trim(),
+  userName: Joi.string().trim(),
+  email: Joi.string().email().trim(),
+  password: Joi.string().regex(matchRegex),
+  avatar: Joi.string(),
+  roleId: Joi.number(),
+  phoneNo: Joi.string(),
+  accountStatus: Joi.string().trim(),
+  positionId: Joi.number(),
+  savingsId: Joi.number(),
+  positionStatus: Joi.number(),
+});
