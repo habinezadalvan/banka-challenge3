@@ -3,9 +3,9 @@ import { User } from './user.service';
 import models from '../sequelize/models/index';
 import { findUser } from '../utils/user.utils';
 import { hashPassword } from '../helpers/user.helpers';
-import { sendEmail } from '../utils/sendEmail';
-import { messageTemplate } from '../utils/nodemailer.templete';
-import { verifyEmailSubject, verifyEmailMessage } from '../utils/nodemailer.paragraphs';
+import { sendEmail } from '../utils/mailer/sendEmail';
+import { messageTemplate } from '../utils/mailer/nodemailer.templete';
+import { verifyEmailSubject, verifyEmailMessage } from '../utils/mailer/nodemailer.paragraphs';
 
 export class Admin extends User {
   async createUser() {
