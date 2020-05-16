@@ -1,4 +1,4 @@
-import { generateToken } from '../helpers/user.helpers';
+import { generateToken } from '../../helpers/user.helpers';
 
 const { BASE_URL } = process.env;
 
