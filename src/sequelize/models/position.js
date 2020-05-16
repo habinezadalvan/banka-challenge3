@@ -11,8 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {});
   Position.associate = (models) => {
-    Position.belongsTo(models.User, {
+    Position.hasMany(models.User, {
       foreignKey: 'positionId',
+      onDelete: 'CASCADE',
+    });
+    Position.hasMany(models.Vote, {
+      foreignKey: 'position_Id',
       onDelete: 'CASCADE',
     });
   };

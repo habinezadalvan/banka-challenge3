@@ -1,10 +1,6 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define('Report', {
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,8 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Report.associate = (models) => {
     Report.belongsTo(models.User, {
-      foreignKey: 'userId',
-      as: 'reporter',
+      targetKey: 'id',
       onDelete: 'CASCADE',
     });
   };

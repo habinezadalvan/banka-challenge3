@@ -5,7 +5,8 @@ import winston from 'winston';
 import { typeDefs } from './graphql/typesDefs';
 import { resolvers } from './graphql/resolvers';
 import { logger } from './logging/config';
-import './db/connectDb';
+import { verifyDatabaseConnection } from './sequelize/config/verifydb';
+import 'dotenv/config';
 
 logger();
 
@@ -23,4 +24,5 @@ app.use(cors());
 server.applyMiddleware({ app }, '/graphql');
 const port = process.env.PORT || 5050;
 
+verifyDatabaseConnection();
 app.listen(port, () => winston.info(`server is running on port ${port}`));

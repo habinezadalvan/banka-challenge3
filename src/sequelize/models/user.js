@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     userName: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -28,67 +30,48 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    roleId: {
-      type: DataTypes.INTEGER,
-      defaultValue: 2,
-    },
-    positionId: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1,
-    },
-    userPositionStatusId: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1,
-    },
-    savingsId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     accountStatus: {
       type: DataTypes.ENUM({
-        values: ['active', 'disactivated'],
+        values: ['activated', 'disactivated'],
+      }),
+      defaultValue: 'activated',
+    },
+    positionStatus: {
+      type: DataTypes.ENUM({
+        values: ['active', 'inactive'],
       }),
       defaultValue: 'active',
     },
+    verified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   }, {});
   User.associate = (models) => {
-    User.hasOne(models.Role, {
+    User.belongsTo(models.Role, {
       targetKey: 'id',
       as: 'role',
       onDelete: 'CASCADE',
     });
+    User.hasMany(models.Vote, {
+      foreignKey: 'candidateId',
+      onDelete: 'CASCADE',
+    });
     User.hasOne(models.Saving, {
-      foreignKey: 'savingsId',
-      as: 'savings',
-      onDelete: 'CASCADE',
-    });
-    User.hasOne(models.Vote, {
-      targetKey: 'candidateId',
-      as: 'vote',
-      onDelete: 'CASCADE',
-    });
-    User.hasOne(models.Position, {
-      foreignKey: 'positionId',
-      as: 'positions',
-      onDelete: 'CASCADE',
-    });
-    User.hasOne(models.UserPositionStatus, {
-      foreignKey: 'userPositionStatusId',
-      as: 'positionStatus',
+      foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
     User.hasMany(models.Contribution, {
-      targetKey: 'userId',
-      as: 'contributions',
+      foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
     User.hasMany(models.Loan, {
-      targetKey: 'userId',
+      foreignKey: 'userId',
       as: 'loans',
       onDelete: 'CASCADE',
     });
     User.hasMany(models.Report, {
-      targetKey: 'userId',
+      foreignKey: 'userId',
       as: 'reports',
       onDelete: 'CASCADE',
     });

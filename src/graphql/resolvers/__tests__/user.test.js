@@ -1,17 +1,9 @@
 import 'dotenv/config';
-import dbConnection from '../../../db/connectDb';
 import { userResolver } from '../user.resolver';
 
 const { USER_PASSWORD } = process.env;
 
 describe('User Test Suite', () => {
-  beforeAll(async () => {
-    await dbConnection;
-  });
-  afterAll((done) => {
-    dbConnection.close();
-    done();
-  });
   let input = {
     email: 'example@example.com',
     password: USER_PASSWORD,

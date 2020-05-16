@@ -1,13 +1,23 @@
 
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('UserPositionStatuses', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('Savings', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    status: {
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+        as: 'userId',
+        onDelete: 'CASCADE',
+      },
+    },
+    amount: {
       type: Sequelize.STRING,
       allowNull: false,
     },
@@ -20,5 +30,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: (queryInterface) => queryInterface.dropTable('UserPositionStatuses'),
+  down: (queryInterface) => queryInterface.dropTable('Savings'),
 };

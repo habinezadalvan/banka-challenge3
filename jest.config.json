@@ -11,7 +11,7 @@
     },
     "modulePaths": ["<rootDir>/src/"],
     "testPathIgnorePatterns":[
-        "<rootDir>/src/sequelize/*", 
+        "<rootDir>/src/sequelize/", 
         "<rootDir>/src/logging/*"
     ]
 }

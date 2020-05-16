@@ -9,8 +9,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
   }, {});
-  Role.associate = () => {
-  //  association
+  Role.associate = (models) => {
+    Role.hasMany(models.User, {
+      foreignKey: 'roleId',
+      onDelete: 'CASCADE',
+    });
   };
   return Role;
 };

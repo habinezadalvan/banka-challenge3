@@ -1,12 +1,8 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Loan = sequelize.define('Loan', {
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     amount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     approved: {
@@ -14,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
     },
     year: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     requestDate: {
@@ -34,13 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     paidAmount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   }, {});
   Loan.associate = (models) => {
     Loan.belongsTo(models.User, {
-      foreignKey: 'userId',
+      targetKey: 'id',
       as: 'loanOwner',
       onDelete: 'CASCADE',
     });
