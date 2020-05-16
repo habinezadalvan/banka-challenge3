@@ -1,9 +1,21 @@
 import { User } from '../../services/user.service';
+import { Admin } from '../../services/admin.service';
+import { decodeToken } from '../../helpers/user.helpers';
 import { generalValidator } from '../../helpers/general.validator';
-import { loginSchema } from '../../utils/schemas/user.schemas';
+import { loginSchema, createUserSchema } from '../../utils/schemas/user.schemas';
+import { isAdmin, addTokenToResults } from '../../utils/user.utils';
 
 export const userResolver = {
   Mutation: {
+    addUser: async (_, { input }, { token }) => {
+      const loggedUser = await decodeToken(token);
+      isAdmin(loggedUser);
+      generalValidator(input, createUserSchema);
+      const admin = new Admin(input);
+      const user = await admin.createUser();
+      return addTokenToResults(user);
+    },
+
     userLogin: async (_, { input }) => {
       generalValidator(input, loginSchema);
       const loggingIn = new User(input);

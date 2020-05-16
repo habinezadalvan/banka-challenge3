@@ -2,15 +2,15 @@
 module.exports = (sequelize, DataTypes) => {
   const Saving = sequelize.define('Saving', {
     amount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
     },
   }, {});
   Saving.associate = (models) => {
     Saving.belongsTo(models.User, {
-      foreignKey: 'savingsId',
-      as: 'owner',
+      targetKey: 'id',
+      onDelete: 'CASCADE',
     });
   };
   return Saving;

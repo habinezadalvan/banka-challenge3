@@ -5,16 +5,16 @@ export const userType = gql`
         id: ID
         firstName: String!
         lastName: String!
-        username: String!
+        userName: String!
         email: String!
         password: String!
         avatar: String
         roleId: Int!
         positionId: Int!
-        userPositionStatusId: Int!
+        positionStatus: String
         savingsId: Int
         accountStatus: String
-        token: Token
+        token: String
     }
     input LoginInput {
         email: String!
@@ -22,5 +22,15 @@ export const userType = gql`
     }
     type Token {
         token: String
+    }
+    input AddUserInput {
+        firstName: String!
+        lastName: String!
+        userName: String!
+        email: String!
+        password: String!
+        avatar: String
+        roleId: Int!
+        phoneNo: String
     }
 `;

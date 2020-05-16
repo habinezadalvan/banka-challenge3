@@ -12,15 +12,15 @@ module.exports = {
       references: {
         model: 'Users',
         key: 'id',
-        as: 'candidateId',
+        onDelete: 'CASCADE',
       },
     },
-    positionId: {
+    position_Id: {
       type: Sequelize.INTEGER,
       references: {
         model: 'Positions',
         key: 'id',
-        as: 'positionId',
+        onDelete: 'CASCADE',
       },
     },
     count: {

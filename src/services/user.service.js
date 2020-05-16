@@ -13,7 +13,6 @@ export class User {
     this.phoneNo = input.phoneNo;
     this.roleId = input.roleId;
     this.positionId = input.positionId;
-    this.userPositionStatusId = input.userPositionStatusId;
     this.savingsId = input.savingsId;
   }
 

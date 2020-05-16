@@ -10,6 +10,7 @@ module.exports = {
     name: {
       type: Sequelize.STRING,
       allowNull: false,
+      defaultValue: 'normal-user',
     },
     description: {
       type: Sequelize.STRING,

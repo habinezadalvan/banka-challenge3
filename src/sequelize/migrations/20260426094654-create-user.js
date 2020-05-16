@@ -17,10 +17,12 @@ module.exports = {
     userName: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
     },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: Sequelize.STRING,
@@ -40,38 +42,26 @@ module.exports = {
       references: {
         model: 'Roles',
         key: 'id',
-        as: 'roleId',
+        onDelete: 'CASCADE',
       },
+      defaultValue: 2,
     },
     positionId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      defaultValue: 1,
       references: {
         model: 'Positions',
         key: 'id',
-        as: 'positionId',
-      },
-    },
-    userPositionStatusId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'UserPositionStatuses',
-        key: 'id',
-        as: 'userPositionStatusId',
-      },
-    },
-    savingsId: {
-      type: Sequelize.INTEGER,
-      allowNull: true,
-      references: {
-        model: { tableName: 'Savings' },
-        key: 'id',
-        as: 'savingsId',
+        onDelete: 'CASCADE',
       },
     },
     accountStatus: {
-      type: Sequelize.ENUM('active', 'disactivated'),
+      type: Sequelize.ENUM('activated', 'disactivated'),
+      defaultValue: 'activated',
+    },
+    positionStatus: {
+      type: Sequelize.ENUM('active', 'inactive'),
       defaultValue: 'active',
     },
     createdAt: {
@@ -83,5 +73,8 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: (queryInterface) => queryInterface.dropTable('Users'),
+  down: (queryInterface) => Promise.all([
+    queryInterface.dropTable('Users'),
+    queryInterface.dropAllEnums(),
+  ]),
 };
