@@ -32,3 +32,6 @@ export const userTwo = {
   avatar: 'image',
   roleId: 1,
 };
+export const updateUserEmail = {
+  email: 'userEmailUpdated@gmail.com',
+};

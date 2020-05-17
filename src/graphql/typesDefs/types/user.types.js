@@ -33,4 +33,19 @@ export const userType = gql`
         roleId: Int!
         phoneNo: String
     }
+    input UpdateUserInput {
+        firstName: String
+        lastName: String
+        userName: String
+        email: String
+        password: String
+        avatar: String
+        roleId: Int
+        phoneNo: String
+        verified: Boolean
+        positionId: Int
+        positionStatus: String
+        savingsId: Int
+        accountStatus: String
+    }
 `;

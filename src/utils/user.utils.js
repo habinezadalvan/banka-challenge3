@@ -8,12 +8,15 @@ export const isAdmin = (user) => {
   return true;
 };
 
-export const findUser = async (value) => {
-  const emailRegex = (/^(\w+@\w+.\w+)*$/ig);
-  const userId = typeof value === 'number' ? value : 0;
-  const userEmail = emailRegex.test(value) ? value : 'fake-email';
+export const findUser = async (values) => {
   const user = await models.User.findOne({
-    where: { [Op.or]: { email: userEmail, id: userId } },
+    where: {
+      [Op.or]: {
+        email: values.email || null,
+        id: values.id || null,
+        userName: values.userName || null,
+      },
+    },
   });
   return user;
 };

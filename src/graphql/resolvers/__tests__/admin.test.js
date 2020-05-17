@@ -5,8 +5,8 @@ import {
   loginData,
   userTwo,
   loginDataTwo,
+  updateUserEmail,
 } from '../__mocks__/user.mocks';
-
 
 describe('admin', () => {
   let adminToken;
@@ -71,6 +71,41 @@ describe('admin', () => {
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
       expect(err.message).toEqual('Please login to proceed!!');
+    }
+  });
+  it('admin updates the user', async () => {
+    await jest.spyOn(userResolver.Mutation, 'updateUser');
+    const updatedUser = await userResolver.Mutation.updateUser(
+      null,
+      { id: 2, input: updateUserEmail },
+      adminToken,
+    );
+    expect(updatedUser.email).toEqual(
+      updateUserEmail.email && updateUserEmail.email.toLocaleLowerCase(),
+    );
+  });
+  it('should throw an error when trying to update a user who does not exists', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        { id: 0, input: updateUserEmail },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, That user does  not exists!');
+    }
+  });
+  it('should throw an error when trying to update an email or username to the ones with already exists', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        { id: 2, input: { email: user.email } },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
     }
   });
 });

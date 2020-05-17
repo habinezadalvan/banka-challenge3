@@ -6,14 +6,16 @@ export class User {
   constructor(input) {
     this.firstName = input.firstName;
     this.lastName = input.lastName;
-    this.userName = input.userName;
-    this.email = input.email;
+    this.userName = input.userName && input.userName.toLowerCase();
+    this.email = input.email && input.email.toLowerCase();
     this.password = input.password;
     this.avatar = input.avatar;
     this.phoneNo = input.phoneNo;
     this.roleId = input.roleId;
     this.positionId = input.positionId;
     this.savingsId = input.savingsId;
+    this.positionStatus = input.positionStatus;
+    this.accountStatus = input.accountStatus;
   }
 
   async login() {
