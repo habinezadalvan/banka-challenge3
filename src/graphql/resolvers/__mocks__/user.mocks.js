@@ -12,6 +12,11 @@ export const loginDataTwo = {
   password: USER_PASSWORD,
 };
 
+export const loginDataThree = {
+  email: 'example@example3.com',
+  password: USER_PASSWORD,
+};
+
 export const user = {
   firstName: 'christian2',
   lastName: 'habineza2',
