@@ -7,6 +7,7 @@ import { resolvers } from './graphql/resolvers';
 import { logger } from './logging/config';
 import { verifyDatabaseConnection } from './sequelize/config/verifydb';
 import 'dotenv/config';
+import router from './RESTful/routes';
 
 logger();
 
@@ -21,8 +22,11 @@ const server = new ApolloServer({
 const app = express();
 app.use(cors());
 
+app.use('/', router);
+
 server.applyMiddleware({ app }, '/graphql');
-const port = process.env.PORT || 5050;
+
 
 verifyDatabaseConnection();
+const port = process.env.PORT || 5050;
 app.listen(port, () => winston.info(`server is running on port ${port}`));

@@ -22,6 +22,7 @@ export class User {
     const { email, password: unhashedPassoword } = this;
     const user = await models.User.findOne({ where: { email } });
     if (!user || !await comparePassword(unhashedPassoword, user.password)) throw new AuthenticationError('Incorrect email or password');
+    if (user.verified === false) throw new AuthenticationError('Please verify your account before you login!');
     const {
       password, createdAt, updatedAt, ...rest
     } = user.dataValues;

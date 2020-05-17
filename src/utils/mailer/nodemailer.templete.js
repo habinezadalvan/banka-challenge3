@@ -1,9 +1,10 @@
-import { generateToken } from '../../helpers/user.helpers';
+import jwt from 'jsonwebtoken';
+// import { generateToken } from '../../helpers/user.helpers';
 
-const { BASE_URL } = process.env;
+const { BASE_URL, JWT_SECRET_KEY } = process.env;
 
 export const messageTemplate = async (data, action, text) => {
-  const token = await generateToken(data);
+  const token = jwt.sign(data, JWT_SECRET_KEY, { expiresIn: '1d' });
   const link = `${BASE_URL}/${action}/${token}`;
   const message = `
   <h2>Hello ${data.userName}</h2> </br>
