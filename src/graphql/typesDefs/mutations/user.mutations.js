@@ -5,5 +5,6 @@ export const userMutations = gql`
     addUser(input: AddUserInput!): User
     userLogin(input: LoginInput!): Token
     updateUser(id: ID!, input: UpdateUserInput!): User
+    deleteUser(id: ID!): String
   }
 `;

@@ -30,5 +30,11 @@ export const userResolver = {
       const updatedUser = await adminInstance.updateUser(id, input);
       return addTokenToResults(updatedUser);
     },
+    deleteUser: async (_, { id }, { token }) => {
+      const loggedUser = await decodeToken(token);
+      isAdmin(loggedUser);
+      const adminInstance = new Admin(id);
+      return adminInstance.deleteUser(id);
+    },
   },
 };
