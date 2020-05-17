@@ -108,4 +108,17 @@ describe('admin', () => {
       expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
     }
   });
+  it('should delete a user by admin', async () => {
+    await jest.spyOn(userResolver.Mutation, 'deleteUser');
+    const res = await userResolver.Mutation.deleteUser(null, { id: 4 }, adminToken);
+    expect(res).toEqual('User deleted successfully!');
+  });
+  it('should throw error when trying to delete nonexisting user', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'deleteUser');
+      await userResolver.Mutation.deleteUser(null, { id: 4 }, adminToken);
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, That user does  not exists!');
+    }
+  });
 });
