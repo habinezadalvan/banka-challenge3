@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'position_Id',
       onDelete: 'CASCADE',
     });
+    Position.hasMany(models.VoteEvent, {
+      foreignKey: 'positionId',
+      onDelete: 'CASCADE',
+    });
   };
   return Position;
 };
