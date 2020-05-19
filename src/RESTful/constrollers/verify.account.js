@@ -14,5 +14,5 @@ export const verifyMyAccount = async (req, res) => {
       message: 'Sorry, your account was not verified. Please contact the admin.',
     });
   }
-  return res.redirect(`${BASE_URL}/graphql`);
+  return res.redirect(`${BASE_URL}/graphql/login`);
 };

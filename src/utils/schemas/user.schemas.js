@@ -32,3 +32,7 @@ export const updateUserSchema = Joi.object().keys({
   savingsId: Joi.number(),
   positionStatus: Joi.number(),
 });
+
+export const resetForgotPasswordSchema = Joi.object().keys({
+  password: Joi.string().regex(matchRegex),
+});

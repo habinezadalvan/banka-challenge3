@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
-import { loginDataThree } from '../__mocks__/user.mocks';
+import { loginDataThree, user } from '../__mocks__/user.mocks';
 
 const { USER_PASSWORD } = process.env;
 
@@ -33,6 +33,19 @@ describe('User Test Suite', () => {
       await userResolver.Mutation.userLogin(null, { input: loginDataThree });
     } catch (err) {
       expect(err.message).toEqual('Please verify your account before you login!');
+    }
+  });
+  it('should test forgot password', async () => {
+    jest.spyOn(userResolver.Mutation, 'forgotPassword');
+    const res = await userResolver.Mutation.forgotPassword(null, { email: input.email });
+    expect(res).toEqual('Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.');
+  });
+  it('should throw an error when trying to reset a password of non-existing email', async () => {
+    try {
+      jest.spyOn(userResolver.Mutation, 'forgotPassword');
+      await userResolver.Mutation.forgotPassword(null, { email: user.email });
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, user not found!');
     }
   });
 });

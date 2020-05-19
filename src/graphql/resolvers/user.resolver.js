@@ -36,5 +36,9 @@ export const userResolver = {
       const adminInstance = new Admin(id);
       return adminInstance.deleteUser(id);
     },
+    forgotPassword: async (_, { email }) => {
+      const user = new User(email);
+      return user.forgotPassword(email);
+    },
   },
 };

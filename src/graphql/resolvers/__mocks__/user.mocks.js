@@ -18,20 +18,20 @@ export const loginDataThree = {
 };
 
 export const user = {
-  firstName: 'christian2',
-  lastName: 'habineza2',
-  userName: 'habinezadalvan',
-  email: 'habineza@gmail.com',
+  firstName: 'firstname',
+  lastName: 'lastname',
+  userName: 'username',
+  email: 'email@gmail.com',
   password: 'TESTpassword123!@#',
   phoneNo: '+25030393944',
   avatar: 'image',
   roleId: 1,
 };
 export const userTwo = {
-  firstName: 'christian2',
-  lastName: 'habineza2',
-  userName: 'habinezadalvan2',
-  email: 'habineza2',
+  firstName: 'firstname2',
+  lastName: 'lastname2',
+  userName: 'username2',
+  email: 'email2gmail.com',
   password: 'TESTpassword123!@#',
   phoneNo: '+25030393944',
   avatar: 'image',
