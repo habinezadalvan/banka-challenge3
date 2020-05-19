@@ -29,7 +29,7 @@ describe('admin', () => {
       { input: user },
       adminToken,
     );
-    expect(createdUser.email).toEqual('habineza@gmail.com');
+    expect(createdUser.email).toEqual('email@gmail.com');
   });
 
   it('it should throw error when a NORMAL user tries to create another user', async () => {
