@@ -6,6 +6,14 @@ import { loginSchema, createUserSchema, updateUserSchema } from '../../utils/sch
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
 
 export const userResolver = {
+  Query: {
+    users: async (_, { createdAt }) => {
+      const users = new User({});
+      const fetchedUsers = await users.allUsers(createdAt);
+      return fetchedUsers;
+    },
+  },
+
   Mutation: {
     addUser: async (_, { input }, { token }) => {
       const loggedUser = await decodeToken(token);

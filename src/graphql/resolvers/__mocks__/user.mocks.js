@@ -40,3 +40,21 @@ export const userTwo = {
 export const updateUserEmail = {
   email: 'userEmailUpdated@gmail.com',
 };
+
+export const fetchedUser = {
+  id: 1,
+  firstName: 'John',
+  lastName: 'Doe',
+  userName: 'johndoe',
+  email: 'example@example.com',
+  password: 'password',
+  phoneNo: '+230494484475',
+  avatar: 'image',
+  accountStatus: 'activated',
+  positionStatus: 'active',
+  verified: true,
+  createdAt: '2020-05-20T15:08:14.691Z',
+  updatedAt: '2020-05-20T15:08:14.691Z',
+  positionId: 1,
+  roleId: 1,
+};
