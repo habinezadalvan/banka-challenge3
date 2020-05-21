@@ -13,13 +13,15 @@ import {
 
 export class Admin extends User {
   async createUser() {
-    const { email, password: typedPassword, userName } = this;
+    const {
+      email, password: typedPassword, userName,
+    } = this;
     const user = await findUser({ email, userName });
     if (user) throw new ForbiddenError('This user already exists.');
     this.password = await hashPassword(typedPassword);
     const createdUser = await models.User.create(this);
     const {
-      password, createdAt, updatedAt, ...rest
+      password, ...rest
     } = createdUser.dataValues;
     // send verification email
     const message = await messageTemplate(rest, 'verify', verifyEmailMessage);

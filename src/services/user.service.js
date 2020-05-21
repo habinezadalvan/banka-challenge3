@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { AuthenticationError } from 'apollo-server-express';
+import { Op } from 'sequelize';
 import { comparePassword, generateToken } from '../helpers/user.helpers';
 import models from '../sequelize/models/index';
 import { findUser } from '../utils/user.utils';
@@ -36,7 +37,7 @@ export class User {
       );
     }
     const {
-      password, createdAt, updatedAt, ...rest
+      password, ...rest
     } = user.dataValues;
     const token = await generateToken(rest);
     return token;
@@ -55,5 +56,23 @@ export class User {
     );
     await sendEmail(email, forgotPasswordSubject, message);
     return 'Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.';
+  }
+
+  async allUsers(createdAt) {
+    try {
+      const options = {
+        order: [['createdAt', 'DESC']],
+        where: {},
+      };
+      if (createdAt) {
+        options.where.createdAt = {
+          [Op.lt]: new Date(Number(createdAt)),
+        };
+      }
+      const users = await models.User.findAll(options, { raw: true });
+      return users;
+    } catch (err) {
+      return err;
+    }
   }
 }

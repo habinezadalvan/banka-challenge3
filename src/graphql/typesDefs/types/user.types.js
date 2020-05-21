@@ -1,20 +1,25 @@
 import { gql } from 'apollo-server-express';
 
-export const userType = gql`
+export const userTypes = gql`
     type User {
         id: ID
         firstName: String!
         lastName: String!
         userName: String!
         email: String!
-        password: String!
         avatar: String
-        roleId: Int!
-        positionId: Int!
+        role: Role
+        position: Position
         positionStatus: String
-        savingsId: Int
+        savings: Saving
         accountStatus: String
+        constributions: [Contribution]
+        reports: [Report]
+        votes: [Vote]
+        votingEvents: [VotingEvent]
+        events: [Event]
         token: String
+        createdAt: String
     }
     input LoginInput {
         email: String!

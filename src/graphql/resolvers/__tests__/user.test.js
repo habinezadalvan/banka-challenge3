@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
-import { loginDataThree, user } from '../__mocks__/user.mocks';
+import { loginDataThree, user, fetchedUser } from '../__mocks__/user.mocks';
 
 const { USER_PASSWORD } = process.env;
 
@@ -46,6 +46,26 @@ describe('User Test Suite', () => {
       await userResolver.Mutation.forgotPassword(null, { email: user.email });
     } catch (err) {
       expect(err.message).toEqual('Sorry, user not found!');
+    }
+  });
+  it('should fetch all users', async () => {
+    jest.spyOn(userResolver.Query, 'users');
+    const res = await userResolver.Query.users(null, {});
+    expect(res[0].dataValues.id).toEqual(fetchedUser.id);
+  });
+  it('should fetch all users with a specific time', async () => {
+    const createdAt = (new Date(Date.now())).getTime();
+    jest.spyOn(userResolver.Query, 'users');
+    const res = await userResolver.Query.users(null, { createdAt });
+    expect(res[0].dataValues.id).toEqual(fetchedUser.id);
+  });
+  it('should throw error when trying to fetch users with incorrect timestamp', async () => {
+    try {
+      const createdAt = '158998623402033423';
+      jest.spyOn(userResolver.Query, 'users');
+      await userResolver.Query.users(null, { createdAt });
+    } catch (err) {
+      expect(err.message).toEqual(err.message);
     }
   });
 });

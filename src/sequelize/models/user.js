@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-  }, {});
+  }, {
+    indexes: [
+      {
+        fields: ['createdAt'],
+      },
+    ],
+  });
   User.associate = (models) => {
     User.belongsTo(models.Role, {
       targetKey: 'id',

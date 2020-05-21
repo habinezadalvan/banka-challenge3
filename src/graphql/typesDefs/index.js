@@ -5,5 +5,13 @@ import { allTypes } from './types/index';
 export const typeDefs = [
   allQueries.userQueries,
   allMutations.userMutations,
-  allTypes.userType,
+  allTypes.userTypes,
+  allTypes.roleTypes,
+  allTypes.positionTypes,
+  allTypes.savingTypes,
+  allTypes.contributionTypes,
+  allTypes.reportTypes,
+  allTypes.voteTypes,
+  allTypes.votingEventsTypes,
+  allTypes.eventsTypes,
 ];
