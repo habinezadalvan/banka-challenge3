@@ -23,7 +23,6 @@ export const updateUserSchema = Joi.object().keys({
   lastName: Joi.string().trim(),
   userName: Joi.string().trim(),
   email: Joi.string().email().trim(),
-  password: Joi.string().regex(matchRegex),
   avatar: Joi.string(),
   roleId: Joi.number(),
   phoneNo: Joi.string(),
@@ -35,4 +34,10 @@ export const updateUserSchema = Joi.object().keys({
 
 export const resetForgotPasswordSchema = Joi.object().keys({
   password: Joi.string().regex(matchRegex),
+});
+
+export const resetPasswordSchema = Joi.object().keys({
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string().regex(matchRegex),
+  comparePassword: Joi.string().valid(Joi.ref('newPassword')).required(),
 });
