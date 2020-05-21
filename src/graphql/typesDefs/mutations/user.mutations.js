@@ -7,5 +7,6 @@ export const userMutations = gql`
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): String
     forgotPassword(email: String!): String
+    resetPassword(input: ResetPassword!): String
   }
 `;

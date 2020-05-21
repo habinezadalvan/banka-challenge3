@@ -1,7 +1,11 @@
 /* eslint-disable class-methods-use-this */
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import { Op } from 'sequelize';
-import { comparePassword, generateToken } from '../helpers/user.helpers';
+import {
+  comparePassword,
+  generateToken,
+  hashPassword,
+} from '../helpers/user.helpers';
 import models from '../sequelize/models/index';
 import { findUser } from '../utils/user.utils';
 import { sendEmail } from '../utils/mailer/sendEmail';
@@ -36,9 +40,7 @@ export class User {
         'Please verify your account before you login!',
       );
     }
-    const {
-      password, ...rest
-    } = user.dataValues;
+    const { password, ...rest } = user.dataValues;
     const token = await generateToken(rest);
     return token;
   }
@@ -49,13 +51,24 @@ export class User {
     const {
       password, createdAt, updatedAt, ...rest
     } = user.dataValues;
-    const message = await messageTemplate(
-      rest,
-      'reset',
-      forgotPasswordText,
-    );
+    const message = await messageTemplate(rest, 'reset', forgotPasswordText);
     await sendEmail(email, forgotPasswordSubject, message);
     return 'Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.';
+  }
+
+  async resetPassword(input, loggedInUser) {
+    const user = await findUser({ email: loggedInUser.email });
+    const checkOldPassword = await comparePassword(
+      input.oldPassword,
+      user.password,
+    );
+    if (!checkOldPassword) throw new ForbiddenError('Sorry! something wrong happened when reseting your password. Please check your old password and try again!');
+    const hashedPassword = await hashPassword(input.newPassword);
+    await models.User.update(
+      { password: hashedPassword },
+      { where: { email: loggedInUser.email } },
+    );
+    return 'password reset was done successfully!!';
   }
 
   async allUsers(createdAt) {

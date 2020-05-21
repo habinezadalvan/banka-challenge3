@@ -2,7 +2,12 @@ import { User } from '../../services/user.service';
 import { Admin } from '../../services/admin.service';
 import { decodeToken } from '../../helpers/user.helpers';
 import { generalValidator } from '../../helpers/general.validator';
-import { loginSchema, createUserSchema, updateUserSchema } from '../../utils/schemas/user.schemas';
+import {
+  loginSchema,
+  createUserSchema,
+  updateUserSchema,
+  resetPasswordSchema,
+} from '../../utils/schemas/user.schemas';
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
 
 export const userResolver = {
@@ -39,14 +44,20 @@ export const userResolver = {
       return addTokenToResults(updatedUser);
     },
     deleteUser: async (_, { id }, { token }) => {
-      const loggedUser = await decodeToken(token);
-      isAdmin(loggedUser);
+      const loggedInUser = await decodeToken(token);
+      isAdmin(loggedInUser);
       const adminInstance = new Admin(id);
       return adminInstance.deleteUser(id);
     },
     forgotPassword: async (_, { email }) => {
       const user = new User(email);
       return user.forgotPassword(email);
+    },
+    resetPassword: async (_, { input }, { token }) => {
+      const loggedInUser = await decodeToken(token);
+      await generalValidator(input, resetPasswordSchema);
+      const user = new User({});
+      return user.resetPassword(input, loggedInUser);
     },
   },
 };

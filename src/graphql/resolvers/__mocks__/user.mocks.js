@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const { USER_PASSWORD } = process.env;
+const { USER_PASSWORD, USER_NEW_PASSWORD } = process.env;
 
 export const loginData = {
   email: 'example@example.com',
@@ -57,4 +57,10 @@ export const fetchedUser = {
   updatedAt: '2020-05-20T15:08:14.691Z',
   positionId: 1,
   roleId: 1,
+};
+
+export const resetPasswordInput = {
+  oldPassword: USER_PASSWORD,
+  newPassword: USER_NEW_PASSWORD,
+  comparePassword: USER_NEW_PASSWORD,
 };

@@ -43,7 +43,6 @@ export const userTypes = gql`
         lastName: String
         userName: String
         email: String
-        password: String
         avatar: String
         roleId: Int
         phoneNo: String
@@ -52,5 +51,11 @@ export const userTypes = gql`
         positionStatus: String
         savingsId: Int
         accountStatus: String
+    }
+
+    input ResetPassword {
+        oldPassword: String!
+        newPassword: String!
+        comparePassword: String!
     }
 `;
