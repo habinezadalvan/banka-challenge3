@@ -69,3 +69,15 @@ export const resetPasswordInput = {
   newPassword: USER_NEW_PASSWORD,
   comparePassword: USER_NEW_PASSWORD,
 };
+
+export const fakeUser = {
+  id: 0,
+  firstName: 'fake',
+  lastName: 'fake',
+  userName: 'fake',
+  email: 'fake@gmail.com',
+  phoneNo: '+25030393944',
+  avatar: 'image',
+  roleId: 1,
+  verified: true,
+};

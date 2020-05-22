@@ -1,5 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { AuthenticationError, ForbiddenError, ApolloError } from 'apollo-server-express';
+import {
+  AuthenticationError,
+  ForbiddenError,
+  ApolloError,
+} from 'apollo-server-express';
 import { Op } from 'sequelize';
 import {
   comparePassword,
@@ -62,13 +66,31 @@ export class User {
       input.oldPassword,
       user.password,
     );
-    if (!checkOldPassword) throw new ForbiddenError('Sorry! something wrong happened when reseting your password. Please check your old password and try again!');
+    if (!checkOldPassword) {
+      throw new ForbiddenError(
+        'Sorry! something wrong happened when reseting your password. Please check your old password and try again!',
+      );
+    }
     const hashedPassword = await hashPassword(input.newPassword);
     await models.User.update(
       { password: hashedPassword },
       { where: { email: loggedInUser.email } },
     );
     return 'password reset was done successfully!!';
+  }
+
+  async me(meLoggedIn) {
+    const { id } = meLoggedIn;
+    const me = await findUser({ id });
+    if (!me) throw new ApolloError('User not found');
+    const { password, ...rest } = me.dataValues;
+    return rest;
+  }
+
+  async getUser(id) {
+    const user = await findUser({ id });
+    if (!user) throw new ApolloError('User not found!');
+    return user;
   }
 
   async allUsers(createdAt) {
@@ -88,7 +110,11 @@ export class User {
   async updateUserProfile(loggedInUser, input) {
     const { email, userName } = input;
     const isExisted = await findUser({ email, userName });
-    if (isExisted) throw new ApolloError('Sorry, you can not update this user. Email or username already exists');
+    if (isExisted) {
+      throw new ApolloError(
+        'Sorry, you can not update this user. Email or username already exists',
+      );
+    }
     const [, value] = await models.User.update(
       { ...this, input },
       { where: { id: loggedInUser.id }, returning: true },

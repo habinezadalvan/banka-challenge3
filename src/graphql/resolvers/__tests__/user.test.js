@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
+import { generateToken } from '../../../helpers/user.helpers';
 import {
   loginDataThree,
   user,
@@ -7,9 +8,13 @@ import {
   resetPasswordInput,
   userUpdateProfile,
   loginData,
+  fakeUser,
 } from '../__mocks__/user.mocks';
 
 const { USER_PASSWORD } = process.env;
+
+
+let fakeToken;
 
 let userToken;
 
@@ -69,7 +74,25 @@ describe('User Test Suite', () => {
     }
   });
 
-  // fetch users test
+  // fetch a single user tests
+
+  it('should fetch all users', async () => {
+    jest.spyOn(userResolver.Query, 'getUser');
+    const res = await userResolver.Query.getUser(null, { id: 1 }, userToken);
+    expect(res.dataValues.id).toBe(1);
+  });
+
+  it('should throw an error when trying to fetch user who does not exist', async () => {
+    try {
+      jest.spyOn(userResolver.Query, 'getUser');
+      await userResolver.Query.getUser(null, { id: 0 }, userToken);
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ApolloError');
+      expect(err.message).toEqual('User not found!');
+    }
+  });
+
+  // fetch users tests
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'users');
@@ -138,6 +161,25 @@ describe('User Test Suite', () => {
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
       expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
+    }
+  });
+
+  // me tests
+
+  it('should fetch me', async () => {
+    jest.spyOn(userResolver.Query, 'me');
+    const res = await userResolver.Query.me(null, null, userToken);
+    expect(res.id).toBe(1);
+  });
+
+  it('should throw an error when I do not exist', async () => {
+    try {
+      fakeToken = await generateToken(fakeUser);
+      jest.spyOn(userResolver.Query, 'me');
+      await userResolver.Query.me(null, null, { token: fakeToken });
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ApolloError');
+      expect(err.message).toEqual('User not found');
     }
   });
 });

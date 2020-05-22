@@ -19,6 +19,18 @@ export const userResolver = {
       const fetchedUsers = await users.allUsers(createdAt);
       return fetchedUsers;
     },
+    getUser: async (_, { id }, { token }) => {
+      await decodeToken(token);
+      const user = new User({});
+      const fetchedUser = await user.getUser(id);
+      return fetchedUser;
+    },
+    me: async (_, args, { token }) => {
+      const meLoggedIn = await decodeToken(token);
+      const meFunction = new User({});
+      const myInfo = await meFunction.me(meLoggedIn);
+      return myInfo;
+    },
   },
 
   Mutation: {
