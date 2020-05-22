@@ -19,16 +19,9 @@ export const createUserSchema = Joi.object().keys({
 });
 
 export const updateUserSchema = Joi.object().keys({
-  firstName: Joi.string().trim(),
-  lastName: Joi.string().trim(),
-  userName: Joi.string().trim(),
-  email: Joi.string().email().trim(),
-  avatar: Joi.string(),
   roleId: Joi.number(),
-  phoneNo: Joi.string(),
   accountStatus: Joi.string().trim(),
   positionId: Joi.number(),
-  savingsId: Joi.number(),
   positionStatus: Joi.number(),
 });
 
@@ -40,4 +33,13 @@ export const resetPasswordSchema = Joi.object().keys({
   oldPassword: Joi.string().required(),
   newPassword: Joi.string().regex(matchRegex),
   comparePassword: Joi.string().valid(Joi.ref('newPassword')).required(),
+});
+
+export const userUpdateProfileSchema = Joi.object().keys({
+  firstName: Joi.string().trim(),
+  lastName: Joi.string().trim(),
+  userName: Joi.string().trim(),
+  email: Joi.string().email().trim(),
+  avatar: Joi.string(),
+  phoneNo: Joi.string(),
 });

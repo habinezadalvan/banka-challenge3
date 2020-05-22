@@ -37,8 +37,13 @@ export const userTwo = {
   avatar: 'image',
   roleId: 1,
 };
-export const updateUserEmail = {
-  email: 'userEmailUpdated@gmail.com',
+export const updateUserRole = {
+  roleId: 2,
+};
+
+export const userUpdateProfile = {
+  firstName: 'firstnameUpdated',
+  lastName: 'lastnameUpdated',
 };
 
 export const fetchedUser = {

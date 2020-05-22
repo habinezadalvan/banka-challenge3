@@ -39,18 +39,20 @@ export const userTypes = gql`
         phoneNo: String
     }
     input UpdateUserInput {
+        roleId: Int
+        verified: Boolean
+        positionId: Int
+        positionStatus: String
+        accountStatus: String
+    }
+
+    input UpdateUserProfileInput {
         firstName: String
         lastName: String
         userName: String
         email: String
         avatar: String
-        roleId: Int
         phoneNo: String
-        verified: Boolean
-        positionId: Int
-        positionStatus: String
-        savingsId: Int
-        accountStatus: String
     }
 
     input ResetPassword {

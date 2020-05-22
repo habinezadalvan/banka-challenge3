@@ -5,11 +5,15 @@ import {
   user,
   fetchedUser,
   resetPasswordInput,
+  userUpdateProfile,
+  loginData,
 } from '../__mocks__/user.mocks';
 
 const { USER_PASSWORD } = process.env;
 
 let userToken;
+
+let createdAt = new Date(Date.now()).getTime();
 
 describe('User Test Suite', () => {
   let input = {
@@ -69,18 +73,17 @@ describe('User Test Suite', () => {
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'users');
-    const res = await userResolver.Query.users(null, {});
+    const res = await userResolver.Query.users(null, {}, userToken);
     expect(res[0].dataValues.id).toEqual(fetchedUser.id);
   });
   it('should fetch all users with a specific time', async () => {
-    const createdAt = new Date(Date.now()).getTime();
     jest.spyOn(userResolver.Query, 'users');
-    const res = await userResolver.Query.users(null, { createdAt });
+    const res = await userResolver.Query.users(null, { createdAt }, userToken);
     expect(res[0].dataValues.id).toEqual(fetchedUser.id);
   });
   it('should throw error when trying to fetch users with incorrect timestamp', async () => {
     try {
-      const createdAt = '158998623402033423';
+      createdAt = '158998623402033423';
       jest.spyOn(userResolver.Query, 'users');
       await userResolver.Query.users(null, { createdAt });
     } catch (err) {
@@ -109,6 +112,32 @@ describe('User Test Suite', () => {
       );
     } catch (err) {
       expect(err.message).toEqual('Sorry! something wrong happened when reseting your password. Please check your old password and try again!');
+    }
+  });
+
+  // update user profile
+
+  it('should test update user profile', async () => {
+    jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
+    const res = await userResolver.Mutation.UpdateUserProfile(
+      null,
+      { input: userUpdateProfile },
+      userToken,
+    );
+    expect(res.firstName).toEqual(userUpdateProfile.firstName);
+  });
+
+  it('should throw an error when a user tries to update his or her username or email to the existing ones', async () => {
+    try {
+      jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
+      await userResolver.Mutation.UpdateUserProfile(
+        null,
+        { input: { email: loginData.email } },
+        userToken,
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ApolloError');
+      expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
     }
   });
 });
