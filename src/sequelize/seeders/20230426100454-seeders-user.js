@@ -34,6 +34,7 @@ module.exports = {
       avatar: 'image',
       roleId: 2,
       positionId: 1,
+      accountStatus: 'disactivated',
       verified: true,
       createdAt: new Date(),
       updatedAt: new Date(),

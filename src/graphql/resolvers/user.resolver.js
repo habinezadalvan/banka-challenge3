@@ -7,12 +7,14 @@ import {
   createUserSchema,
   updateUserSchema,
   resetPasswordSchema,
+  userUpdateProfileSchema,
 } from '../../utils/schemas/user.schemas';
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
 
 export const userResolver = {
   Query: {
-    users: async (_, { createdAt }) => {
+    users: async (_, { createdAt }, { token }) => {
+      await decodeToken(token);
       const users = new User({});
       const fetchedUsers = await users.allUsers(createdAt);
       return fetchedUsers;
@@ -58,6 +60,12 @@ export const userResolver = {
       await generalValidator(input, resetPasswordSchema);
       const user = new User({});
       return user.resetPassword(input, loggedInUser);
+    },
+    UpdateUserProfile: async (_, { input }, { token }) => {
+      const loggedInUser = await decodeToken(token);
+      await generalValidator(input, userUpdateProfileSchema);
+      const user = new User(input);
+      return user.updateUserProfile(loggedInUser, input);
     },
   },
 };

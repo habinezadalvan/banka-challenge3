@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-express';
+import { ApolloError, ForbiddenError } from 'apollo-server-express';
 import { hashSync, compareSync } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
 import '@babel/polyfill';
@@ -20,6 +20,7 @@ export const decodeToken = async (token) => {
     if (error) {
       throw new ApolloError('Please login to proceed!!');
     } else {
+      if (decoded.accountStatus === 'disactivated') throw new ForbiddenError('Your account was disactivated');
       user = decoded;
     }
   });

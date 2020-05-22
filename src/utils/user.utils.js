@@ -13,9 +13,9 @@ export const findUser = async (values) => {
   const user = await models.User.findOne({
     where: {
       [Op.or]: {
-        email: values.email || null,
+        email: (values.email && values.email.toLowerCase()) || null,
         id: values.id || null,
-        userName: values.userName || null,
+        userName: (values.userName && values.userName.toLowerCase()) || null,
       },
     },
   });

@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
+import { AuthenticationError, ForbiddenError, ApolloError } from 'apollo-server-express';
 import { Op } from 'sequelize';
 import {
   comparePassword,
@@ -72,20 +72,28 @@ export class User {
   }
 
   async allUsers(createdAt) {
-    try {
-      const options = {
-        order: [['createdAt', 'DESC']],
-        where: {},
+    const options = {
+      order: [['createdAt', 'DESC']],
+      where: {},
+    };
+    if (createdAt) {
+      options.where.createdAt = {
+        [Op.lt]: new Date(Number(createdAt)),
       };
-      if (createdAt) {
-        options.where.createdAt = {
-          [Op.lt]: new Date(Number(createdAt)),
-        };
-      }
-      const users = await models.User.findAll(options, { raw: true });
-      return users;
-    } catch (err) {
-      return err;
     }
+    const users = await models.User.findAll(options, { raw: true });
+    return users;
+  }
+
+  async updateUserProfile(loggedInUser, input) {
+    const { email, userName } = input;
+    const isExisted = await findUser({ email, userName });
+    if (isExisted) throw new ApolloError('Sorry, you can not update this user. Email or username already exists');
+    const [, value] = await models.User.update(
+      { ...this, input },
+      { where: { id: loggedInUser.id }, returning: true },
+    );
+    const { password, ...rest } = value[0].dataValues;
+    return rest;
   }
 }

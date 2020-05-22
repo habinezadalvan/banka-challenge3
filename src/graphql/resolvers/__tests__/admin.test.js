@@ -5,7 +5,7 @@ import {
   loginData,
   userTwo,
   loginDataTwo,
-  updateUserEmail,
+  updateUserRole,
 } from '../__mocks__/user.mocks';
 
 describe('admin', () => {
@@ -32,7 +32,111 @@ describe('admin', () => {
     expect(createdUser.email).toEqual('email@gmail.com');
   });
 
+  // update a user by admin
+
+  it('admin updates the user', async () => {
+    await jest.spyOn(userResolver.Mutation, 'updateUser');
+    const updatedUser = await userResolver.Mutation.updateUser(
+      null,
+      { id: 2, input: { accountStatus: 'activated' } },
+      adminToken,
+    );
+    expect(updatedUser.accountStatus).toEqual('activated');
+  });
+
+  it('should throw an when an admin tries to update a user with non-existing role or position', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        {
+          id: 2,
+          input: {
+            accountStatus: 'activated',
+            roleId: 10000,
+            positionId: 20000,
+          },
+        },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual(
+        'Sorry, you can not update this user. There is a problem in the role or position you are providing',
+      );
+    }
+  });
+  it('should throw an when an admin tries to update a user with non-existing position and existing role', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        {
+          id: 2,
+          input: { accountStatus: 'activated', roleId: 1, positionId: 20000 },
+        },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual(
+        'Sorry, you can not update this user. There is a problem in the role or position you are providing',
+      );
+    }
+  });
+
+  it('should throw an when an admin tries to update a user with non-existing role', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        {
+          id: 2,
+          input: { accountStatus: 'activated', roleId: 1000 },
+        },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual(
+        'Sorry, you can not update this user. There is a problem in the role or position you are providing',
+      );
+    }
+  });
+
+  it('should throw an when an admin tries to update a user with non-existing position', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        {
+          id: 2,
+          input: { accountStatus: 'activated', positionId: 20000 },
+        },
+        adminToken,
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual(
+        'Sorry, you can not update this user. There is a problem in the role or position you are providing',
+      );
+    }
+  });
+
+  it('it should throw error when an account is disactivated', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'addUser');
+      await userResolver.Mutation.addUser(null, { input: user }, userToken);
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual('Your account was disactivated');
+    }
+  });
+
   it('it should throw error when a NORMAL user tries to create another user', async () => {
+    userToken = await userResolver.Mutation.userLogin(null, {
+      input: loginDataTwo,
+    });
     try {
       await jest.spyOn(userResolver.Mutation, 'addUser');
       await userResolver.Mutation.addUser(null, { input: user }, userToken);
@@ -73,44 +177,26 @@ describe('admin', () => {
       expect(err.message).toEqual('Please login to proceed!!');
     }
   });
-  it('admin updates the user', async () => {
-    await jest.spyOn(userResolver.Mutation, 'updateUser');
-    const updatedUser = await userResolver.Mutation.updateUser(
-      null,
-      { id: 2, input: updateUserEmail },
-      adminToken,
-    );
-    expect(updatedUser.email).toEqual(
-      updateUserEmail.email && updateUserEmail.email.toLocaleLowerCase(),
-    );
-  });
+
   it('should throw an error when trying to update a user who does not exists', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'updateUser');
       await userResolver.Mutation.updateUser(
         null,
-        { id: 0, input: updateUserEmail },
+        { id: 0, input: updateUserRole },
         adminToken,
       );
     } catch (err) {
       expect(err.message).toEqual('Sorry, That user does  not exists!');
     }
   });
-  it('should throw an error when trying to update an email or username to the ones with already exists', async () => {
-    try {
-      await jest.spyOn(userResolver.Mutation, 'updateUser');
-      await userResolver.Mutation.updateUser(
-        null,
-        { id: 2, input: { email: user.email } },
-        adminToken,
-      );
-    } catch (err) {
-      expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
-    }
-  });
   it('should delete a user by admin', async () => {
     await jest.spyOn(userResolver.Mutation, 'deleteUser');
-    const res = await userResolver.Mutation.deleteUser(null, { id: 4 }, adminToken);
+    const res = await userResolver.Mutation.deleteUser(
+      null,
+      { id: 4 },
+      adminToken,
+    );
     expect(res).toEqual('User deleted successfully!');
   });
   it('should throw error when trying to delete nonexisting user', async () => {
