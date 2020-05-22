@@ -33,8 +33,8 @@ export class Admin extends User {
     const isExisted = await findRoleAndPosition({ roleId, positionId });
     if (
       (roleId && positionId && (!isExisted.role || !isExisted.position))
-      || (roleId && !isExisted.role)
-      || (positionId && !isExisted.position)
+      || ((roleId && !isExisted.role)
+      || (positionId && !isExisted.role))
     ) throw new ForbiddenError('Sorry, you can not update this user. There is a problem in the role or position you are providing');
 
     const [, value] = await models.User.update(

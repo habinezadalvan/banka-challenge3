@@ -22,7 +22,7 @@ export const updateUserSchema = Joi.object().keys({
   roleId: Joi.number(),
   accountStatus: Joi.string().trim(),
   positionId: Joi.number(),
-  positionStatus: Joi.number(),
+  positionStatus: Joi.string(),
 });
 
 export const resetForgotPasswordSchema = Joi.object().keys({
