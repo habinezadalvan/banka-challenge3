@@ -26,12 +26,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
   }, {});
-  VoteEvent.associate = (models) => {
-    VoteEvent.belongsTo(models.User, {
-      targetKey: 'id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
+  VoteEvent.associate = () => {
+    // VoteEvent.belongsTo(models.User, {
+    //   targetKey: 'id',
+    //   onDelete: 'CASCADE',
+    //   onUpdate: 'CASCADE',
+    // });
   };
 
   return VoteEvent;

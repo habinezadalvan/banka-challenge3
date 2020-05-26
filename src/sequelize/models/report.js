@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {});
-  Report.associate = (models) => {
-    Report.belongsTo(models.User, {
-      targetKey: 'id',
-      onDelete: 'CASCADE',
-    });
+  Report.associate = () => {
+    // Report.belongsTo(models.User, {
+    //   targetKey: 'id',
+    //   onDelete: 'CASCADE',
+    // });
   };
   return Report;
 };

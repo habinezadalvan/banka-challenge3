@@ -27,7 +27,50 @@ export const user = {
   avatar: 'image',
   roleId: 1,
 };
+export const testUser = {
+  dataValues: {
+    id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    userName: 'johndoe',
+    email: 'example@example.com',
+    password: 'fakepassword',
+    phoneNo: '+230494484475',
+    avatar: 'image',
+    accountStatus: null,
+    positionStatus: 'active',
+    verified: true,
+    savingId: 1,
+    createdAt: '2020-05-24T15:21:38.774Z',
+    updatedAt: '2020-05-24T15:21:38.774Z',
+    positionId: 1,
+    roleId: 1,
+  },
+};
+
+export const testUserTwo = {
+  dataValues: {
+    id: 2,
+    firstName: 'John',
+    lastName: 'Doe',
+    userName: 'johndoe',
+    email: 'example@example.com',
+    password: 'fakepassword',
+    phoneNo: '+230494484475',
+    avatar: 'image',
+    accountStatus: null,
+    positionStatus: 'active',
+    verified: true,
+    savingId: 2,
+    createdAt: '2020-05-24T15:21:38.774Z',
+    updatedAt: '2020-05-24T15:21:38.774Z',
+    positionId: 0,
+    roleId: 0,
+  },
+};
+
 export const userTwo = {
+  id: 0,
   firstName: 'firstname2',
   lastName: 'lastname2',
   userName: 'username2',
@@ -36,6 +79,7 @@ export const userTwo = {
   phoneNo: '+25030393944',
   avatar: 'image',
   roleId: 1,
+  positionId: 1,
 };
 export const updateUserRole = {
   roleId: 2,

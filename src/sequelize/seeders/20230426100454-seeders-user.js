@@ -20,6 +20,7 @@ module.exports = {
       avatar: 'image',
       roleId: 1,
       positionId: 1,
+      savingId: 1,
       verified: true,
       createdAt: new Date(),
       updatedAt: new Date(),

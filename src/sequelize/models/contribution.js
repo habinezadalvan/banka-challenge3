@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
   }, {});
-  Contribution.associate = (models) => {
-    Contribution.belongsTo(models.User, {
-      targetKey: 'id',
-      onDelete: 'CASCADE',
-    });
+  Contribution.associate = () => {
+    // Contribution.belongsTo(models.User, {
+    //   targetKey: 'id',
+    //   onDelete: 'CASCADE',
+    // });
   };
   return Contribution;
 };

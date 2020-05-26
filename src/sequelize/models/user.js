@@ -62,28 +62,29 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Vote, {
       foreignKey: 'candidateId',
       onDelete: 'CASCADE',
-    });
-    User.hasOne(models.Saving, {
-      foreignKey: 'userId',
-      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Contribution, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Loan, {
       foreignKey: 'userId',
       as: 'loans',
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Report, {
       foreignKey: 'userId',
       as: 'reports',
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.VoteEvent, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Event, {
       foreignKey: 'userId',

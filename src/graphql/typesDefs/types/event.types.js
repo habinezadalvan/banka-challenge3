@@ -4,7 +4,7 @@ export const eventsTypes = gql`
     type Event {
         id: ID!
         name: String!
-        attendees: [User]
+        attendees: [String]
         description: String
         startTime: String!
         closeTime: String

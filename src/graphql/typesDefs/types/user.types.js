@@ -3,21 +3,21 @@ import { gql } from 'apollo-server-express';
 export const userTypes = gql`
     type User {
         id: ID
-        firstName: String!
-        lastName: String!
-        userName: String!
-        email: String!
+        firstName: String
+        lastName: String
+        userName: String
+        email: String
         avatar: String
-        role: Role
-        position: Position
+        userRole: Role
+        userPosition: Position
         positionStatus: String
-        savings: Saving
+        userSavings: Saving
         accountStatus: String
-        constributions: [Contribution]
-        reports: [Report]
-        votes: [Vote]
-        votingEvents: [VotingEvent]
-        events: [Event]
+        userContributions: [Contribution]
+        userReports: [Report]
+        userVotes: [Vote]
+        userVotingEvents: [VotingEvent]
+        userEvents: [Event]
         token: String
         createdAt: String
     }

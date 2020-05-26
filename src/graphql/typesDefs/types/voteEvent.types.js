@@ -6,10 +6,10 @@ export const votingEventsTypes = gql`
         closed
     }
     type VotingEvent {
-        id: ID!
-        votingMembers: [User]
-        candidates: [User]
-        startTime: String!
+        id: ID
+        votingMembers: [String]
+        candidates: [String]
+        startTime: String
         closeTime: String
         status: EventStatusOptions
         notify: [User]

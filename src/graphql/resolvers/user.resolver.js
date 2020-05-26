@@ -10,6 +10,14 @@ import {
   userUpdateProfileSchema,
 } from '../../utils/schemas/user.schemas';
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
+import { Role } from '../../services/role.services';
+import { Position } from '../../services/position.services';
+import { Saving } from '../../services/saving.services';
+import { Contribution } from '../../services/contribution.services';
+import { Report } from '../../services/report.services';
+import { Vote } from '../../services/vote.services';
+import { VoteEvent } from '../../services/voteEvent.services';
+import { Event } from '../../services/event.services';
 
 export const userResolver = {
   Query: {
@@ -78,6 +86,56 @@ export const userResolver = {
       await generalValidator(input, userUpdateProfileSchema);
       const user = new User(input);
       return user.updateUserProfile(loggedInUser, input);
+    },
+  },
+  User: {
+    userRole: async (user, _, { token }) => {
+      await decodeToken(token);
+      const role = new Role({});
+      const res = await role.findRole(user.roleId);
+      return res;
+    },
+    userPosition: async (user, _, { token }) => {
+      await decodeToken(token);
+      const position = new Position({});
+      const res = await position.findPosition(user.positionId);
+      return res;
+    },
+    userSavings: async (user, _, { token }) => {
+      await decodeToken(token);
+      const saving = new Saving({});
+      const res = await saving.findSaving(user.dataValues.savingId);
+      return res;
+    },
+    userContributions: async (user, _, { token }) => {
+      await decodeToken(token);
+      const contribution = new Contribution({});
+      const res = await contribution.findContribution(user.id);
+      return res;
+    },
+    userReports: async (user, _, { token }) => {
+      await decodeToken(token);
+      const report = new Report({});
+      const res = await report.findReport(user.id);
+      return res;
+    },
+    userVotes: async (user, _, { token }) => {
+      await decodeToken(token);
+      const vote = new Vote({});
+      const res = await vote.findVote(user.id);
+      return res;
+    },
+    userVotingEvents: async (user, _, { token }) => {
+      await decodeToken(token);
+      const voteEvent = new VoteEvent({});
+      const res = await voteEvent.findVoteEvent(user.id);
+      return res;
+    },
+    userEvents: async (user, _, { token }) => {
+      await decodeToken(token);
+      const event = new Event({});
+      const res = await event.findEvent(user.id);
+      return res;
     },
   },
 };
