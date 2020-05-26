@@ -9,9 +9,9 @@ export const findRoleAndPosition = async (values) => {
       arr.push(result);
     }
   });
-  const [role, position] = await Promise.all(arr);
+  const [firstResults, secondResults] = await Promise.all(arr);
   return {
-    role,
-    position,
+    firstResults,
+    secondResults,
   };
 };

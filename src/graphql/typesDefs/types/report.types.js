@@ -7,9 +7,9 @@ export const reportTypes = gql`
         laon
     }
     type Report {
-        id: ID!
-        title: Int
+        id: ID
+        title: String
         type: ReportOptions
-        context: Int
+        context: String
     }
 `;

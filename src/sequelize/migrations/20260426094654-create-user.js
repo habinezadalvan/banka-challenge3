@@ -64,6 +64,14 @@ module.exports = {
       type: Sequelize.ENUM('active', 'inactive'),
       defaultValue: 'active',
     },
+    savingId: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      references: {
+        model: { tableName: 'Savings' },
+        key: 'id',
+      },
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const Saving = sequelize.define('Saving', {
     amount: {
@@ -8,9 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {});
   Saving.associate = (models) => {
-    Saving.belongsTo(models.User, {
-      targetKey: 'id',
+    Saving.hasOne(models.User, {
+      foreignKey: 'savingId',
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
   return Saving;

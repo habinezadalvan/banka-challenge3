@@ -29,5 +29,5 @@ server.applyMiddleware({ app }, '/graphql');
 
 
 verifyDatabaseConnection();
-const port = process.env.PORT || 5050;
+const port = process.env.PORT || 5080;
 app.listen(port, () => winston.info(`server is running on port ${port}`));

@@ -32,9 +32,9 @@ export class Admin extends User {
     if (!checkUser) throw new ApolloError('Sorry, That user does  not exists!');
     const isExisted = await findRoleAndPosition({ roleId, positionId });
     if (
-      (roleId && positionId && (!isExisted.role || !isExisted.position))
-      || ((roleId && !isExisted.role)
-      || (positionId && !isExisted.role))
+      (roleId && positionId && (!isExisted.firstResults || !isExisted.secondResults))
+      || ((roleId && !isExisted.firstResults)
+      || (positionId && !isExisted.firstResults))
     ) throw new ForbiddenError('Sorry, you can not update this user. There is a problem in the role or position you are providing');
 
     const [, value] = await models.User.update(

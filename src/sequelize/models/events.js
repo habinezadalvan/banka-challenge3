@@ -30,12 +30,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
   }, {});
-  Event.associate = (models) => {
-    Event.belongsTo(models.User, {
-      targetKey: 'id',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
+  Event.associate = () => {
+    // Event.belongsTo(models.User, {
+    //   targetKey: 'id',
+    //   onDelete: 'CASCADE',
+    //   onUpdate: 'CASCADE',
+    // });
   };
 
   return Event;

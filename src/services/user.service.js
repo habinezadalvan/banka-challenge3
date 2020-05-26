@@ -30,7 +30,6 @@ export class User {
     this.phoneNo = input.phoneNo;
     this.roleId = input.roleId;
     this.positionId = input.positionId;
-    this.savingsId = input.savingsId;
     this.positionStatus = input.positionStatus;
     this.accountStatus = input.accountStatus;
   }
