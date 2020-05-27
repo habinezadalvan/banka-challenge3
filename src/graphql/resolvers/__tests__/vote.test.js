@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
 import { fetchedUser } from '../__mocks__/user.mocks';
+import { res } from '../__mocks__/request.response.mocks';
 
 const { USER_PASSWORD } = process.env;
 
@@ -14,12 +15,13 @@ describe('Votes Test Suite', () => {
   };
 
   beforeAll(async () => {
-    userToken = await userResolver.Mutation.userLogin(null, { input });
+    userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
   });
 
   it('should test fetch user Votes', async () => {
     jest.spyOn(userResolver.User, 'userVotes');
-    const res = await userResolver.User.userVotes(fetchedUser, null, userToken);
-    expect(res[0].dataValues.candidateId).toBe(1);
+    const results = await userResolver.User.userVotes(fetchedUser, null,
+      { token: userToken.accessToken });
+    expect(results[0].dataValues.candidateId).toBe(1);
   });
 });

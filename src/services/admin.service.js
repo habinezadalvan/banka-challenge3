@@ -19,7 +19,7 @@ export class Admin extends User {
     if (user) throw new ForbiddenError('This user already exists.');
     this.password = await hashPassword(typedPassword);
     const createdUser = await models.User.create(this);
-    const { password, ...rest } = createdUser.dataValues;
+    const { password, tokenVersion, ...rest } = createdUser.dataValues;
     // send verification email
     const message = await messageTemplate(rest, 'verify', verifyEmailMessage);
     await sendEmail(email, verifyEmailSubject, message);
@@ -41,7 +41,7 @@ export class Admin extends User {
       { ...this, input },
       { where: { id }, returning: true },
     );
-    const { password, ...rest } = value[0].dataValues;
+    const { password, tokenVersion, ...rest } = value[0].dataValues;
     return rest;
   }
 

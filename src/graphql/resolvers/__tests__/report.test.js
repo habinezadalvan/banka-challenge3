@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
 import { fetchedUser } from '../__mocks__/user.mocks';
+import { res } from '../__mocks__/request.response.mocks';
 
 const { USER_PASSWORD } = process.env;
 
 let userToken;
-
 
 describe('Reports Test Suite', () => {
   const input = {
@@ -14,12 +14,14 @@ describe('Reports Test Suite', () => {
   };
 
   beforeAll(async () => {
-    userToken = await userResolver.Mutation.userLogin(null, { input });
+    userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
   });
 
   it('should test fetch user Reports', async () => {
     jest.spyOn(userResolver.User, 'userReports');
-    const res = await userResolver.User.userReports(fetchedUser, null, userToken);
-    expect(res[0].dataValues.userId).toBe(1);
+    const results = await userResolver.User.userReports(fetchedUser, null, {
+      token: userToken.accessToken,
+    });
+    expect(results[0].dataValues.userId).toBe(1);
   });
 });
