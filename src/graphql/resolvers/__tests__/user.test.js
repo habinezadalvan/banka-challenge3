@@ -9,7 +9,7 @@ import {
   loginData,
   fakeUser,
 } from '../__mocks__/user.mocks';
-import { res } from '../__mocks__/request.response.mocks';
+import { req, res } from '../__mocks__/request.response.mocks';
 
 const { USER_PASSWORD, ACCESS_TOKEN_SECRET_KEY } = process.env;
 
@@ -207,5 +207,10 @@ describe('User Test Suite', () => {
       expect(err.constructor.name).toEqual('ApolloError');
       expect(err.message).toEqual('User not found');
     }
+  });
+  it('Logout a user', async () => {
+    jest.spyOn(userResolver.Mutation, 'logout');
+    const results = await userResolver.Mutation.logout(null, null, { req, res });
+    expect(results).toBe(true);
   });
 });

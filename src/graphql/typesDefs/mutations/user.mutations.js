@@ -9,5 +9,6 @@ export const userMutations = gql`
     forgotPassword(email: String!): String
     resetPassword(input: ResetPassword!): String
     UpdateUserProfile(input: UpdateUserProfileInput!): User
+    logout: Boolean
   }
 `;
