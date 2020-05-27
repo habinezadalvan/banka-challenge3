@@ -51,11 +51,11 @@ export const userResolver = {
       return addTokenToResults(user);
     },
 
-    userLogin: async (_, { input }) => {
+    userLogin: async (_, { input }, { res }) => {
       generalValidator(input, loginSchema);
       const loggingIn = new User(input);
-      const token = await loggingIn.login();
-      return { token };
+      const accessToken = await loggingIn.login(res);
+      return { accessToken };
     },
     updateUser: async (_, { id, input }, { token }) => {
       const loggedUser = await decodeToken(token);

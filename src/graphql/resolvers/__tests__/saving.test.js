@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
 import { testUser, testUserTwo } from '../__mocks__/user.mocks';
+import { res } from '../__mocks__/request.response.mocks';
 
 const { USER_PASSWORD } = process.env;
 
 let userToken;
-
 
 describe('savings Test Suite', () => {
   const input = {
@@ -14,17 +14,21 @@ describe('savings Test Suite', () => {
   };
 
   beforeAll(async () => {
-    userToken = await userResolver.Mutation.userLogin(null, { input });
+    userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
   });
 
   it('should test fetch user savings', async () => {
     jest.spyOn(userResolver.User, 'userSavings');
-    const res = await userResolver.User.userSavings(testUser, null, userToken);
-    expect(res.amount).toEqual('0');
+    const results = await userResolver.User.userSavings(testUser, null, {
+      token: userToken.accessToken,
+    });
+    expect(results.amount).toEqual('0');
   });
   it('should return null when there is no savings', async () => {
     jest.spyOn(userResolver.User, 'userSavings');
-    const res = await userResolver.User.userSavings(testUserTwo, null, userToken);
-    expect(res).toEqual([]);
+    const results = await userResolver.User.userSavings(testUserTwo, null, {
+      token: userToken.accessToken,
+    });
+    expect(results).toEqual([]);
   });
 });

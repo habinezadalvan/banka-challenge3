@@ -9,6 +9,7 @@ import {
   comparePassword,
   generateToken,
   hashPassword,
+  sendRefreshTokenAsCookie,
 } from '../helpers/user.helpers';
 import models from '../sequelize/models/index';
 import { findUser } from '../utils/user.utils';
@@ -18,6 +19,8 @@ import {
   forgotPasswordText,
   forgotPasswordSubject,
 } from '../utils/mailer/nodemailer.paragraphs';
+
+const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = process.env;
 
 export class User {
   constructor(input) {
@@ -34,7 +37,7 @@ export class User {
     this.accountStatus = input.accountStatus;
   }
 
-  async login() {
+  async login(res) {
     const { email, password: unhashedPassoword } = this;
     const user = await models.User.findOne({ where: { email } });
     if (!user || !(await comparePassword(unhashedPassoword, user.password))) throw new AuthenticationError('Incorrect email or password');
@@ -44,8 +47,17 @@ export class User {
       );
     }
     const { password, ...rest } = user.dataValues;
-    const token = await generateToken(rest);
-    return token;
+
+    // set cookie
+
+    const refreshToken = await generateToken(rest, REFRESH_TOKEN_SECRET_KEY, '7d');
+
+    sendRefreshTokenAsCookie(res, refreshToken);
+
+    const { tokenVersion, ...restWithoutTokenVersion } = rest;
+
+    const accessToken = await generateToken(restWithoutTokenVersion, ACCESS_TOKEN_SECRET_KEY, '15m');
+    return accessToken;
   }
 
   async forgotPassword(email) {
@@ -54,6 +66,7 @@ export class User {
     const {
       password, createdAt, updatedAt, ...rest
     } = user.dataValues;
+    await new User({}).revokeRefreshToken(rest.id);
     const message = await messageTemplate(rest, 'reset', forgotPasswordText);
     await sendEmail(email, forgotPasswordSubject, message);
     return 'Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.';
@@ -120,5 +133,10 @@ export class User {
     );
     const { password, ...rest } = value[0].dataValues;
     return rest;
+  }
+
+  async revokeRefreshToken(id) {
+    await models.User.increment('tokenVersion', { where: { id } });
+    return true;
   }
 }

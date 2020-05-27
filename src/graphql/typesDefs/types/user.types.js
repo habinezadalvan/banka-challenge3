@@ -18,15 +18,16 @@ export const userTypes = gql`
         userVotes: [Vote]
         userVotingEvents: [VotingEvent]
         userEvents: [Event]
-        token: String
+        token: LoginResponse
         createdAt: String
     }
     input LoginInput {
         email: String!
         password: String!
     }
-    type Token {
-        token: String
+
+    type LoginResponse {
+        accessToken: String
     }
     input AddUserInput {
         firstName: String!

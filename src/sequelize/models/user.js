@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    tokenVersion: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   }, {
     indexes: [
       {

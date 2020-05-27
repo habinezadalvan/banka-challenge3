@@ -4,10 +4,10 @@ import { resetForgotPasswordSchema } from '../../utils/schemas/user.schemas';
 import models from '../../sequelize/models';
 import { hashPassword } from '../../helpers/user.helpers';
 
-const { JWT_SECRET_KEY } = process.env;
+const { ACCESS_TOKEN_SECRET_KEY } = process.env;
 export const forgotPassword = async (req, res) => {
   try {
-    const { email } = await jwt.verify(req.params.token, JWT_SECRET_KEY);
+    const { email } = await jwt.verify(req.params.token, ACCESS_TOKEN_SECRET_KEY);
     const { password } = req.body;
     await generalValidator({ password }, resetForgotPasswordSchema);
     const hashedPassword = await hashPassword(password);
@@ -19,7 +19,7 @@ export const forgotPassword = async (req, res) => {
   } catch (err) {
     return res.status(400).json({
       status: 400,
-      message: `${err.message}`,
+      message: `${err}`,
     });
   }
 };

@@ -4,6 +4,8 @@ import models from '../sequelize/models/index';
 import { generateToken } from '../helpers/user.helpers';
 
 
+const { ACCESS_TOKEN_SECRET_KEY } = process.env;
+
 export const isAdmin = (user) => {
   if (user.roleId !== 1) throw new AuthenticationError('Sorry, you are not an admin.');
   return true;
@@ -23,9 +25,11 @@ export const findUser = async (values) => {
 };
 
 export const addTokenToResults = async (res) => {
-  const token = await generateToken(res);
+  const accessToken = await generateToken(res, ACCESS_TOKEN_SECRET_KEY, '15m');
   return {
     ...res,
-    token,
+    token: {
+      accessToken,
+    },
   };
 };

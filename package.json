@@ -33,6 +33,7 @@
     "@hapi/joi": "^17.1.1",
     "apollo-server-express": "^2.11.0",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -47,14 +48,17 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.5",
     "jest": "^25.4.0",
     "lint-staged": "^10.1.7",
+    "mock-req-res": "^1.1.4",
     "nodemon": "^2.0.2",
     "sequelize-cli": "^5.5.1",
+    "sinon": "^9.0.2",
     "sqlite3": "^4.1.1"
   },
   "lint-staged": {

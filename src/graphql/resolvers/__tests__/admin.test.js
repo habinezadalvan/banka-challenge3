@@ -7,6 +7,7 @@ import {
   loginDataTwo,
   updateUserRole,
 } from '../__mocks__/user.mocks';
+import { res } from '../__mocks__/request.response.mocks';
 
 describe('admin', () => {
   let adminToken;
@@ -14,12 +15,20 @@ describe('admin', () => {
 
   beforeAll(async () => {
     jest.spyOn(userResolver.Mutation, 'userLogin');
-    adminToken = await userResolver.Mutation.userLogin(null, {
-      input: loginData,
-    });
-    userToken = await userResolver.Mutation.userLogin(null, {
-      input: loginDataTwo,
-    });
+    adminToken = await userResolver.Mutation.userLogin(
+      null,
+      {
+        input: loginData,
+      },
+      { res },
+    );
+    userToken = await userResolver.Mutation.userLogin(
+      null,
+      {
+        input: loginDataTwo,
+      },
+      { res },
+    );
   });
 
   it('it should create a user by admin', async () => {
@@ -27,7 +36,7 @@ describe('admin', () => {
     const createdUser = await userResolver.Mutation.addUser(
       null,
       { input: user },
-      adminToken,
+      { token: adminToken.accessToken },
     );
     expect(createdUser.email).toEqual('email@gmail.com');
   });
@@ -39,7 +48,7 @@ describe('admin', () => {
     const updatedUser = await userResolver.Mutation.updateUser(
       null,
       { id: 2, input: { accountStatus: 'activated' } },
-      adminToken,
+      { token: adminToken.accessToken },
     );
     expect(updatedUser.accountStatus).toEqual('activated');
   });
@@ -57,7 +66,7 @@ describe('admin', () => {
             positionId: 20000,
           },
         },
-        adminToken,
+        { token: adminToken.accessToken },
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
@@ -75,7 +84,7 @@ describe('admin', () => {
           id: 2,
           input: { accountStatus: 'activated', roleId: 1, positionId: 20000 },
         },
-        adminToken,
+        { token: adminToken.accessToken },
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
@@ -94,7 +103,7 @@ describe('admin', () => {
           id: 2,
           input: { accountStatus: 'activated', roleId: 1000 },
         },
-        adminToken,
+        { token: adminToken.accessToken },
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
@@ -113,7 +122,7 @@ describe('admin', () => {
           id: 2,
           input: { accountStatus: 'activated', positionId: 20000 },
         },
-        adminToken,
+        { token: adminToken.accessToken },
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
@@ -126,7 +135,11 @@ describe('admin', () => {
   it('it should throw error when an account is disactivated', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'addUser');
-      await userResolver.Mutation.addUser(null, { input: user }, userToken);
+      await userResolver.Mutation.addUser(
+        null,
+        { input: user },
+        { token: userToken.accessToken },
+      );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
       expect(err.message).toEqual('Your account was disactivated');
@@ -134,12 +147,20 @@ describe('admin', () => {
   });
 
   it('it should throw error when a NORMAL user tries to create another user', async () => {
-    userToken = await userResolver.Mutation.userLogin(null, {
-      input: loginDataTwo,
-    });
+    userToken = await userResolver.Mutation.userLogin(
+      null,
+      {
+        input: loginDataTwo,
+      },
+      { res },
+    );
     try {
       await jest.spyOn(userResolver.Mutation, 'addUser');
-      await userResolver.Mutation.addUser(null, { input: user }, userToken);
+      await userResolver.Mutation.addUser(
+        null,
+        { input: user },
+        { token: userToken.accessToken },
+      );
     } catch (err) {
       expect(err.constructor.name).toEqual('AuthenticationError');
       expect(err.message).toEqual('Sorry, you are not an admin.');
@@ -149,7 +170,11 @@ describe('admin', () => {
   it('it should throw error when used already exists', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'addUser');
-      await userResolver.Mutation.addUser(null, { input: user }, adminToken);
+      await userResolver.Mutation.addUser(
+        null,
+        { input: user },
+        { token: adminToken.accessToken },
+      );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
       expect(err.message).toEqual('This user already exists.');
@@ -158,7 +183,11 @@ describe('admin', () => {
   it('it should throw error when creating a user with unvalid email', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'addUser');
-      await userResolver.Mutation.addUser(null, { input: userTwo }, adminToken);
+      await userResolver.Mutation.addUser(
+        null,
+        { input: userTwo },
+        { token: adminToken.accessToken },
+      );
     } catch (err) {
       expect(err.constructor.name).toEqual('UserInputError');
       expect(err.message).toEqual('email must be a valid email');
@@ -184,7 +213,7 @@ describe('admin', () => {
       await userResolver.Mutation.updateUser(
         null,
         { id: 0, input: updateUserRole },
-        adminToken,
+        { token: adminToken.accessToken },
       );
     } catch (err) {
       expect(err.message).toEqual('Sorry, That user does  not exists!');
@@ -192,17 +221,21 @@ describe('admin', () => {
   });
   it('should delete a user by admin', async () => {
     await jest.spyOn(userResolver.Mutation, 'deleteUser');
-    const res = await userResolver.Mutation.deleteUser(
+    const results = await userResolver.Mutation.deleteUser(
       null,
       { id: 4 },
-      adminToken,
+      { token: adminToken.accessToken },
     );
-    expect(res).toEqual('User deleted successfully!');
+    expect(results).toEqual('User deleted successfully!');
   });
   it('should throw error when trying to delete nonexisting user', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'deleteUser');
-      await userResolver.Mutation.deleteUser(null, { id: 4 }, adminToken);
+      await userResolver.Mutation.deleteUser(
+        null,
+        { id: 4 },
+        { token: adminToken.accessToken },
+      );
     } catch (err) {
       expect(err.message).toEqual('Sorry, That user does  not exists!');
     }

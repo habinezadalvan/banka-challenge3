@@ -4,15 +4,14 @@ import { generateToken } from '../../../helpers/user.helpers';
 import {
   loginDataThree,
   user,
-  fetchedUser,
   resetPasswordInput,
   userUpdateProfile,
   loginData,
   fakeUser,
 } from '../__mocks__/user.mocks';
+import { res } from '../__mocks__/request.response.mocks';
 
-const { USER_PASSWORD } = process.env;
-
+const { USER_PASSWORD, ACCESS_TOKEN_SECRET_KEY } = process.env;
 
 let fakeToken;
 
@@ -28,8 +27,8 @@ describe('User Test Suite', () => {
 
   it('Login a user', async () => {
     jest.spyOn(userResolver.Mutation, 'userLogin');
-    userToken = await userResolver.Mutation.userLogin(null, { input });
-    expect(userToken).toHaveProperty('token');
+    userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
+    expect(userToken).toHaveProperty('accessToken');
   });
   it('Should throw an errow when there is incorrect password or email', async () => {
     input = {
@@ -38,15 +37,20 @@ describe('User Test Suite', () => {
     };
     try {
       jest.spyOn(userResolver.Mutation, 'userLogin');
-      await userResolver.Mutation.userLogin(null, { input });
+      await userResolver.Mutation.userLogin(null, { input }, { res });
     } catch (err) {
       expect(err.constructor.name).toEqual('AuthenticationError');
     }
   });
+
   it('Should throw an errow when the account is not verified', async () => {
     try {
       jest.spyOn(userResolver.Mutation, 'userLogin');
-      await userResolver.Mutation.userLogin(null, { input: loginDataThree });
+      await userResolver.Mutation.userLogin(
+        null,
+        { input: loginDataThree },
+        { res },
+      );
     } catch (err) {
       expect(err.message).toEqual(
         'Please verify your account before you login!',
@@ -58,10 +62,10 @@ describe('User Test Suite', () => {
 
   it('should test forgot password', async () => {
     jest.spyOn(userResolver.Mutation, 'forgotPassword');
-    const res = await userResolver.Mutation.forgotPassword(null, {
+    const results = await userResolver.Mutation.forgotPassword(null, {
       email: input.email,
     });
-    expect(res).toEqual(
+    expect(results).toEqual(
       'Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.',
     );
   });
@@ -78,14 +82,22 @@ describe('User Test Suite', () => {
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'getUser');
-    const res = await userResolver.Query.getUser(null, { id: 1 }, userToken);
-    expect(res.dataValues.id).toBe(1);
+    const results = await userResolver.Query.getUser(
+      null,
+      { id: 1 },
+      { token: userToken.accessToken },
+    );
+    expect(results.dataValues.id).toBe(1);
   });
 
   it('should throw an error when trying to fetch user who does not exist', async () => {
     try {
       jest.spyOn(userResolver.Query, 'getUser');
-      await userResolver.Query.getUser(null, { id: 0 }, userToken);
+      await userResolver.Query.getUser(
+        null,
+        { id: 0 },
+        { token: userToken.accessToken },
+      );
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
       expect(err.message).toEqual('User not found!');
@@ -96,13 +108,21 @@ describe('User Test Suite', () => {
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'users');
-    const res = await userResolver.Query.users(null, {}, userToken);
-    expect(res[0].dataValues.id).toEqual(fetchedUser.id);
+    const results = await userResolver.Query.users(
+      null,
+      {},
+      { token: userToken.accessToken },
+    );
+    expect(results[0].dataValues).toHaveProperty('email');
   });
   it('should fetch all users with a specific time', async () => {
     jest.spyOn(userResolver.Query, 'users');
-    const res = await userResolver.Query.users(null, { createdAt }, userToken);
-    expect(res[0].dataValues.id).toEqual(fetchedUser.id);
+    const results = await userResolver.Query.users(
+      null,
+      { createdAt },
+      { token: userToken.accessToken },
+    );
+    expect(results[0].dataValues).toHaveProperty('firstName');
   });
   it('should throw error when trying to fetch users with incorrect timestamp', async () => {
     try {
@@ -118,12 +138,12 @@ describe('User Test Suite', () => {
 
   it('should test user reset password', async () => {
     jest.spyOn(userResolver.Mutation, 'resetPassword');
-    const res = await userResolver.Mutation.resetPassword(
+    const results = await userResolver.Mutation.resetPassword(
       null,
       { input: resetPasswordInput },
-      userToken,
+      { token: userToken.accessToken },
     );
-    expect(res).toEqual('password reset was done successfully!!');
+    expect(results).toEqual('password reset was done successfully!!');
   });
   it('should throw an error when a user tried to reset a wrong password', async () => {
     try {
@@ -131,10 +151,12 @@ describe('User Test Suite', () => {
       await userResolver.Mutation.resetPassword(
         null,
         { input: { ...resetPasswordInput, oldPassword: 'fake@PASSword12345' } },
-        userToken,
+        { token: userToken.accessToken },
       );
     } catch (err) {
-      expect(err.message).toEqual('Sorry! something wrong happened when reseting your password. Please check your old password and try again!');
+      expect(err.message).toEqual(
+        'Sorry! something wrong happened when reseting your password. Please check your old password and try again!',
+      );
     }
   });
 
@@ -142,12 +164,12 @@ describe('User Test Suite', () => {
 
   it('should test update user profile', async () => {
     jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
-    const res = await userResolver.Mutation.UpdateUserProfile(
+    const results = await userResolver.Mutation.UpdateUserProfile(
       null,
       { input: userUpdateProfile },
-      userToken,
+      { token: userToken.accessToken },
     );
-    expect(res.firstName).toEqual(userUpdateProfile.firstName);
+    expect(results.firstName).toEqual(userUpdateProfile.firstName);
   });
 
   it('should throw an error when a user tries to update his or her username or email to the existing ones', async () => {
@@ -156,11 +178,13 @@ describe('User Test Suite', () => {
       await userResolver.Mutation.UpdateUserProfile(
         null,
         { input: { email: loginData.email } },
-        userToken,
+        { token: userToken.accessToken },
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
-      expect(err.message).toEqual('Sorry, you can not update this user. Email or username already exists');
+      expect(err.message).toEqual(
+        'Sorry, you can not update this user. Email or username already exists',
+      );
     }
   });
 
@@ -168,13 +192,15 @@ describe('User Test Suite', () => {
 
   it('should fetch me', async () => {
     jest.spyOn(userResolver.Query, 'me');
-    const res = await userResolver.Query.me(null, null, userToken);
-    expect(res.id).toBe(1);
+    const results = await userResolver.Query.me(null, null, {
+      token: userToken.accessToken,
+    });
+    expect(results.id).toBe(1);
   });
 
   it('should throw an error when I do not exist', async () => {
     try {
-      fakeToken = await generateToken(fakeUser);
+      fakeToken = await generateToken(fakeUser, ACCESS_TOKEN_SECRET_KEY, '15m');
       jest.spyOn(userResolver.Query, 'me');
       await userResolver.Query.me(null, null, { token: fakeToken });
     } catch (err) {
