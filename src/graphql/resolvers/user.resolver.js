@@ -87,6 +87,7 @@ export const userResolver = {
       const user = new User(input);
       return user.updateUserProfile(loggedInUser, input);
     },
+    logout: (_, args, { req, res }) => new User({}).logout(req, res),
   },
   User: {
     userRole: async (user, _, { token }) => {

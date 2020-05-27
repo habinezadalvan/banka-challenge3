@@ -139,4 +139,9 @@ export class User {
     await models.User.increment('tokenVersion', { where: { id } });
     return true;
   }
+
+  async logout(req, res) {
+    await sendRefreshTokenAsCookie(res, '');
+    return true;
+  }
 }
