@@ -19,6 +19,13 @@ let userToken;
 
 let createdAt = new Date(Date.now()).getTime();
 
+const file = {
+  filename: '2-Days-Akagera-Nationall-Park-Tour (1).jpg',
+  mimetype: 'image/jpeg',
+  encoding: '7bit',
+  createReadStream: () => {},
+};
+
 describe('User Test Suite', () => {
   let input = {
     email: 'example@example.com',
@@ -166,7 +173,7 @@ describe('User Test Suite', () => {
     jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
     const results = await userResolver.Mutation.UpdateUserProfile(
       null,
-      { input: userUpdateProfile },
+      { input: userUpdateProfile, file },
       { token: userToken.accessToken },
     );
     expect(results.firstName).toEqual(userUpdateProfile.firstName);
@@ -185,6 +192,26 @@ describe('User Test Suite', () => {
       expect(err.message).toEqual(
         'Sorry, you can not update this user. Email or username already exists',
       );
+    }
+  });
+  it('should throw an error when a user tries to update his or her profile picture with non-supported format', async () => {
+    const invalidFileFormat = {
+      filename: 'Quarantine - Wasafi Feat Diamond Platnumz, Rayvanny, Mbosso, Lava Lava, Queen Darleen & Zuchu - YouTube.mkv',
+      mimetype: 'application/octet-stream',
+      encoding: '7bit',
+      createReadStream: () => {},
+    };
+
+    try {
+      jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
+      await userResolver.Mutation.UpdateUserProfile(
+        null,
+        { input: { email: 'newemail@gmail.com' }, file: invalidFileFormat },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ApolloError');
+      expect(err.message).toEqual('File not supported!');
     }
   });
 

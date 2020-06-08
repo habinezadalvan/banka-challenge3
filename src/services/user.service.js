@@ -19,6 +19,7 @@ import {
   forgotPasswordText,
   forgotPasswordSubject,
 } from '../utils/mailer/nodemailer.paragraphs';
+import { imageUpload } from '../utils/image.utils';
 
 const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = process.env;
 
@@ -119,7 +120,7 @@ export class User {
     return users;
   }
 
-  async updateUserProfile(loggedInUser, input) {
+  async updateUserProfile(loggedInUser, input, file) {
     const { email, userName } = input;
     const isExisted = await findUser({ email, userName });
     if (isExisted) {
@@ -127,8 +128,16 @@ export class User {
         'Sorry, you can not update this user. Email or username already exists',
       );
     }
+    const mimetypeRegex = /^(image)\/((jpeg)|(jpg)|(png))$/gi;
+
+    let filename;
+
+    if (file !== undefined) {
+      filename = await imageUpload(file, mimetypeRegex);
+    }
+
     const [, value] = await models.User.update(
-      { ...this, input },
+      { ...this, input, avatar: filename },
       { where: { id: loggedInUser.id }, returning: true },
     );
     const { password, ...rest } = value[0].dataValues;

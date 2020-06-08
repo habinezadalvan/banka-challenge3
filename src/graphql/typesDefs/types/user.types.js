@@ -9,6 +9,7 @@ export const userTypes = gql`
         email: String
         avatar: String
         userRole: Role
+        phoneNo: String
         userPosition: Position
         positionStatus: String
         userSavings: Saving
@@ -52,7 +53,6 @@ export const userTypes = gql`
         lastName: String
         userName: String
         email: String
-        avatar: String
         phoneNo: String
     }
 
