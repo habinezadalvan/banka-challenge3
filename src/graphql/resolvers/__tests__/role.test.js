@@ -33,7 +33,7 @@ describe('Role Test Suite', () => {
       });
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
-      expect(err.message).toEqual('Role not found!');
+      expect(err.message).toEqual('Role or Position does not exist!');
     }
   });
 });

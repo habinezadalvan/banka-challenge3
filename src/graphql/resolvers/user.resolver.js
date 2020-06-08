@@ -10,14 +10,26 @@ import {
   userUpdateProfileSchema,
 } from '../../utils/schemas/user.schemas';
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
-import { Role } from '../../services/role.services';
-import { Position } from '../../services/position.services';
+// import { Role } from '../../services/role.services';
+// import { Position } from '../../services/position.services';
 import { Saving } from '../../services/saving.services';
-import { Contribution } from '../../services/contribution.services';
-import { Report } from '../../services/report.services';
-import { Vote } from '../../services/vote.services';
-import { VoteEvent } from '../../services/voteEvent.services';
-import { Event } from '../../services/event.services';
+// import { Contribution } from '../../services/contribution.services';
+// import { Report } from '../../services/report.services';
+// import { Vote } from '../../services/vote.services';
+// import { VoteEvent } from '../../services/voteEvent.services';
+// import { Event } from '../../services/event.services';
+import { GeneralClass } from '../../services/generalClass.service';
+import { RolePosition } from '../../services/rolePostion.service';
+
+const modelNames = {
+  contribution: 'Contribution',
+  saving: 'Saving',
+  role: 'Role',
+  event: 'Event',
+  voteEvent: 'VoteEvent',
+  report: 'Report',
+  vote: 'Vote',
+};
 
 export const userResolver = {
   Query: {
@@ -92,50 +104,50 @@ export const userResolver = {
   User: {
     userRole: async (user, _, { token }) => {
       await decodeToken(token);
-      const role = new Role({});
-      const res = await role.findRole(user.roleId);
+      const role = new RolePosition({});
+      const res = await role.findGeneralMethod({ roleId: user.roleId });
       return res;
     },
     userPosition: async (user, _, { token }) => {
       await decodeToken(token);
-      const position = new Position({});
-      const res = await position.findPosition(user.positionId);
+      const position = new RolePosition({});
+      const res = await position.findGeneralMethod({ positionId: user.positionId });
       return res;
     },
     userSavings: async (user, _, { token }) => {
       await decodeToken(token);
       const saving = new Saving({});
-      const res = await saving.findSaving(user.dataValues.savingId);
+      const res = await saving.findGeneralMethod(user.dataValues.savingId);
       return res;
     },
     userContributions: async (user, _, { token }) => {
       await decodeToken(token);
-      const contribution = new Contribution({});
-      const res = await contribution.findContribution(user.id);
+      const contribution = new GeneralClass({});
+      const res = await contribution.findGeneralMethod(user.id, modelNames.contribution);
       return res;
     },
     userReports: async (user, _, { token }) => {
       await decodeToken(token);
-      const report = new Report({});
-      const res = await report.findReport(user.id);
+      const report = new GeneralClass({});
+      const res = await report.findGeneralMethod(user.id, modelNames.report);
       return res;
     },
     userVotes: async (user, _, { token }) => {
       await decodeToken(token);
-      const vote = new Vote({});
-      const res = await vote.findVote(user.id);
+      const vote = new GeneralClass({});
+      const res = await vote.findGeneralMethod(user.id, modelNames.vote);
       return res;
     },
     userVotingEvents: async (user, _, { token }) => {
       await decodeToken(token);
-      const voteEvent = new VoteEvent({});
-      const res = await voteEvent.findVoteEvent(user.id);
+      const voteEvent = new GeneralClass({});
+      const res = await voteEvent.findGeneralMethod(user.id, modelNames.voteEvent);
       return res;
     },
     userEvents: async (user, _, { token }) => {
       await decodeToken(token);
-      const event = new Event({});
-      const res = await event.findEvent(user.id);
+      const event = new GeneralClass({});
+      const res = await event.findGeneralMethod(user.id, modelNames.event);
       return res;
     },
   },

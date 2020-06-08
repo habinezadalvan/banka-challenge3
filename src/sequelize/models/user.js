@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
     });
     User.hasMany(models.Vote, {
-      foreignKey: 'candidateId',
+      foreignKey: 'userId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
