@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface) => queryInterface.bulkInsert('Votes', [{
-    candidateId: 1,
+    userId: 1,
     position_Id: 1,
     count: 0,
     createdAt: new Date(),

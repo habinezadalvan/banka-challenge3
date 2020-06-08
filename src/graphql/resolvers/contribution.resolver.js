@@ -12,6 +12,5 @@ export const contributionResolver = {
       const results = contribution.payContribution(loggedInUser, file);
       return results;
     },
-
   },
 };

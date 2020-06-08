@@ -22,6 +22,6 @@ describe('Votes Test Suite', () => {
     jest.spyOn(userResolver.User, 'userVotes');
     const results = await userResolver.User.userVotes(fetchedUser, null,
       { token: userToken.accessToken });
-    expect(results[0].dataValues.candidateId).toBe(1);
+    expect(results[0].dataValues.userId).toBe(1);
   });
 });
