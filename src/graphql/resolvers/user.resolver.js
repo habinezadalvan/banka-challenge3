@@ -81,11 +81,11 @@ export const userResolver = {
       const user = new User({});
       return user.resetPassword(input, loggedInUser);
     },
-    UpdateUserProfile: async (_, { input }, { token }) => {
+    UpdateUserProfile: async (_, { input, file }, { token }) => {
       const loggedInUser = await decodeToken(token);
       await generalValidator(input, userUpdateProfileSchema);
       const user = new User(input);
-      return user.updateUserProfile(loggedInUser, input);
+      return user.updateUserProfile(loggedInUser, input, file);
     },
     logout: (_, args, { req, res }) => new User({}).logout(req, res),
   },

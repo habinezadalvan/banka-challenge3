@@ -25,21 +25,13 @@ module.exports = {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
-    year: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    month: {
-      type: Sequelize.STRING,
+    contributionOfMonthOf: {
+      type: Sequelize.DATE,
       allowNull: false,
     },
     paymentOption: {
       type: Sequelize.ENUM('bank', 'mobile'),
       defaultValue: 'bank',
-    },
-    paid: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false,
     },
     bankReceipt: {
       type: Sequelize.STRING,

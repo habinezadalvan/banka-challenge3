@@ -9,11 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    year: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    month: {
+    contributionOfMonthOf: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -23,20 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       }),
       defaultValue: 'bank',
     },
-    paid: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
     bankReceipt: {
       type: DataTypes.STRING,
       allowNull: true,
     },
   }, {});
   Contribution.associate = () => {
-    // Contribution.belongsTo(models.User, {
-    //   targetKey: 'id',
-    //   onDelete: 'CASCADE',
-    // });
   };
   return Contribution;
 };

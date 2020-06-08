@@ -3,6 +3,7 @@ import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import winston from 'winston';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 import { typeDefs } from './graphql/typesDefs';
 import { resolvers } from './graphql/resolvers';
 import { logger } from './logging/config';
@@ -23,6 +24,8 @@ const server = new ApolloServer({
 });
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());

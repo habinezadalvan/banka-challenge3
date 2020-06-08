@@ -9,10 +9,15 @@ export const contributionTypes = gql`
         id: ID!
         amount: Int
         approved: Boolean
-        year: Int
-        month: Int
         paymentOptions: PaymentOptions
-        paid: Boolean
         bankReceipt: String
+        contributionOfMonthOf: String!
+    }
+
+    input ContributionInput {
+        amount: Int!
+        paymentOptions: PaymentOptions
+        bankReceipt: String
+        contributionOfMonthOf: String!
     }
 `;
