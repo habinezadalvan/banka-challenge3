@@ -24,6 +24,10 @@ describe('Contribution Test Suite', () => {
     password: USER_PASSWORD,
   };
 
+  const updateContributionInput = {
+    amount: 10000,
+  };
+
   beforeAll(async () => {
     userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
     await userResolver.Mutation.updateUser(
@@ -41,6 +45,8 @@ describe('Contribution Test Suite', () => {
       { token: userToken.accessToken },
     );
   });
+
+  // create or pay contribution
 
   it('should test pay contribution and upload bankReceipt', async () => {
     jest.spyOn(contributionResolver.Mutation, 'addContribution');
@@ -77,6 +83,8 @@ describe('Contribution Test Suite', () => {
     expect(results[0].dataValues.userId).toBe(1);
   });
 
+  // approve contribution
+
   it('should throw an error when a someone in charge of approving tries to approve his or her contribution', async () => {
     try {
       jest.spyOn(contributionResolver.Mutation, 'approveContribution');
@@ -107,10 +115,57 @@ describe('Contribution Test Suite', () => {
       expect(err.message).toEqual('Sorry, you are neither a secretary nor fiance personnel.');
     }
   });
+
+  // update contribution
+  it('should test update contribution by user', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'updateContribution');
+    const results = await contributionResolver.Mutation.updateContribution(
+      null,
+      {
+        id: 1,
+        input: updateContributionInput,
+        file,
+      },
+      { token: userToken.accessToken },
+    );
+    expect(results.amount).toEqual('10000');
+  });
+  it('should throw an error when trying to update a contribution which does not exists', async () => {
+    try {
+      jest.spyOn(contributionResolver.Mutation, 'updateContribution');
+      await contributionResolver.Mutation.updateContribution(
+        null,
+        {
+          id: 0,
+          input: updateContributionInput,
+        },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ApolloError');
+      expect(err.message).toEqual('Contribution not found!');
+    }
+  });
+  it('should throw an error when a user tries to update a contribution which does not belong to him/her', async () => {
+    try {
+      jest.spyOn(contributionResolver.Mutation, 'updateContribution');
+      await contributionResolver.Mutation.updateContribution(
+        null,
+        {
+          id: 2,
+          input: updateContributionInput,
+        },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual('Sorry, this contribution does not belong to you!');
+    }
+  });
 });
 
 
-describe('eage cases', () => {
+describe('Approve contribution', () => {
   const input = {
     email: 'example@example2.com',
     password: USER_PASSWORD,

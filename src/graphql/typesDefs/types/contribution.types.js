@@ -17,7 +17,11 @@ export const contributionTypes = gql`
     input ContributionInput {
         amount: Int!
         paymentOptions: PaymentOptions
-        bankReceipt: String
         contributionOfMonthOf: String!
+    }
+    input ContributionUpdateInput {
+        amount: Int
+        paymentOptions: PaymentOptions
+        contributionOfMonthOf: String
     }
 `;

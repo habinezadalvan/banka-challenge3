@@ -1,40 +1,36 @@
 /* eslint-disable class-methods-use-this */
 import { ApolloError, ForbiddenError } from 'apollo-server-express';
 import models from '../sequelize/models';
-import { imageUpload } from '../utils/image.utils';
+import { getFilename } from '../utils/image.utils';
 import { GeneralClass } from './generalClass.service';
 
 
 export class Contribution extends GeneralClass {
   async payContribution(user, file) {
-    const regex = /^(image|application)\/((jpeg)|(png)|(jpg)|(pdf))$/gi;
-    let filename;
-
-    if (file !== undefined) {
-      filename = await imageUpload(file, regex);
-    }
-
+    const filename = await getFilename(file);
     const contribution = await models.Contribution.create(
       { ...this, userId: user.id, bankReceipt: filename },
     );
     return contribution;
   }
 
-  async findGeneralMethod(id) {
-    const mycontribution = await models.Contribution.findOne({ where: { userId: id } });
-    return mycontribution;
-  }
+  // update contribution
 
-  async approveContribution(id, user) {
+  async contributionUpdate(id, user, input, file) {
     const findContribution = await models.Contribution.findOne({ where: { id } });
     if (!findContribution) throw new ApolloError('Contribution not found!');
 
-    const isMyContribution = await this.findGeneralMethod(user.id);
+    if (findContribution.userId !== user.id) throw new ForbiddenError('Sorry, this contribution does not belong to you!');
 
-    if (isMyContribution) throw new ForbiddenError('Sorry, you can not approve your own contribution!');
+    let filename;
 
+    if (file !== undefined) {
+      filename = await getFilename(file);
+    }
     const [, value] = await models.Contribution.update(
-      { approved: true },
+      {
+        ...input, bankReceipt: filename, approved: false,
+      },
       { where: { id }, returning: true },
     );
     return value[0].dataValues;

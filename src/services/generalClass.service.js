@@ -6,7 +6,6 @@ export class GeneralClass {
     // contribution input
     this.amount = input.amount; // works for savings as well
     this.paymentOption = input.paymentOption;
-    this.bankReceipt = input.bankReceipt;
     this.contributionOfMonthOf = input.contributionOfMonthOf;
 
     // event and voteEvent input

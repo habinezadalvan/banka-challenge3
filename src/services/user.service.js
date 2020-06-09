@@ -21,7 +21,12 @@ import {
 } from '../utils/mailer/nodemailer.paragraphs';
 import { imageUpload } from '../utils/image.utils';
 
-const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = process.env;
+const {
+  ACCESS_TOKEN_SECRET_KEY,
+  REFRESH_TOKEN_SECRET_KEY,
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} = process.env;
 
 export class User {
   constructor(input) {
@@ -51,13 +56,21 @@ export class User {
 
     // set cookie
 
-    const refreshToken = await generateToken(rest, REFRESH_TOKEN_SECRET_KEY, '7d');
+    const refreshToken = await generateToken(
+      rest,
+      REFRESH_TOKEN_SECRET_KEY,
+      REFRESH_TOKEN_EXPIRES_IN,
+    );
 
     sendRefreshTokenAsCookie(res, refreshToken);
 
     const { tokenVersion, ...restWithoutTokenVersion } = rest;
 
-    const accessToken = await generateToken(restWithoutTokenVersion, ACCESS_TOKEN_SECRET_KEY, '15m');
+    const accessToken = await generateToken(
+      restWithoutTokenVersion,
+      ACCESS_TOKEN_SECRET_KEY,
+      ACCESS_TOKEN_EXPIRES_IN,
+    );
     return accessToken;
   }
 
