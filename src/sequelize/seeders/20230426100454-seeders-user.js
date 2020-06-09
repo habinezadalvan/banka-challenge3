@@ -19,7 +19,7 @@ module.exports = {
       phoneNo: '+230494484475',
       avatar: 'image',
       roleId: 1,
-      positionId: 1,
+      positionId: 3,
       savingId: 1,
       verified: true,
       createdAt: new Date(),

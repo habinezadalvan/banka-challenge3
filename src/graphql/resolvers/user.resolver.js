@@ -10,14 +10,7 @@ import {
   userUpdateProfileSchema,
 } from '../../utils/schemas/user.schemas';
 import { isAdmin, addTokenToResults } from '../../utils/user.utils';
-// import { Role } from '../../services/role.services';
-// import { Position } from '../../services/position.services';
 import { Saving } from '../../services/saving.services';
-// import { Contribution } from '../../services/contribution.services';
-// import { Report } from '../../services/report.services';
-// import { Vote } from '../../services/vote.services';
-// import { VoteEvent } from '../../services/voteEvent.services';
-// import { Event } from '../../services/event.services';
 import { GeneralClass } from '../../services/generalClass.service';
 import { RolePosition } from '../../services/rolePostion.service';
 

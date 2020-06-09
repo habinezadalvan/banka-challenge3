@@ -13,7 +13,7 @@
     "undo:seeds": "sequelize db:seed:undo:all",
     "lint": "eslint .",
     "test": "jest --coverage --runInBand --forceExit",
-    "pretest": "NODE_ENV=test yarn undo:migration && NODE_ENV=test yarn migration  && NODE_ENV=test yarn undo:seeds && NODE_ENV=test yarn seeds"
+    "pretest": "NODE_ENV=test yarn db:refresh"
   },
   "repository": {
     "type": "git",
