@@ -11,7 +11,7 @@ import {
 } from '../__mocks__/user.mocks';
 import { req, res } from '../__mocks__/request.response.mocks';
 
-const { USER_PASSWORD, ACCESS_TOKEN_SECRET_KEY } = process.env;
+const { USER_PASSWORD, ACCESS_TOKEN_SECRET_KEY, ACCESS_TOKEN_EXPIRES_IN } = process.env;
 
 let fakeToken;
 
@@ -227,7 +227,7 @@ describe('User Test Suite', () => {
 
   it('should throw an error when I do not exist', async () => {
     try {
-      fakeToken = await generateToken(fakeUser, ACCESS_TOKEN_SECRET_KEY, '15m');
+      fakeToken = await generateToken(fakeUser, ACCESS_TOKEN_SECRET_KEY, ACCESS_TOKEN_EXPIRES_IN);
       jest.spyOn(userResolver.Query, 'me');
       await userResolver.Query.me(null, null, { token: fakeToken });
     } catch (err) {

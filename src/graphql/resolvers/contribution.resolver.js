@@ -1,8 +1,10 @@
 import { Contribution } from '../../services/contribution.services';
 import { generalValidator } from '../../helpers/general.validator';
-import { contributionSchema } from '../../utils/schemas/contribution.schemas';
+import { contributionSchema, updateContributionSchema } from '../../utils/schemas/contribution.schemas';
 import { decodeToken } from '../../helpers/user.helpers';
 import { isSecretaryOrFinance } from '../../utils/user.utils';
+import { SecretaryAndFinance } from '../../services/secretaryAndFinance.service';
+
 
 export const contributionResolver = {
   Mutation: {
@@ -16,10 +18,16 @@ export const contributionResolver = {
     approveContribution: async (_, { id }, { token }) => {
       const user = await decodeToken(token);
       isSecretaryOrFinance(user);
-      const approve = new Contribution({});
+      const approve = new SecretaryAndFinance({});
+      const results = await approve.contributionUpdate(id, user);
 
-      const results = await approve.approveContribution(id, user);
-
+      return results;
+    },
+    updateContribution: async (_, { id, input, file }, { token }) => {
+      const user = await decodeToken(token);
+      await generalValidator(input, updateContributionSchema);
+      const updateContribution = new Contribution({});
+      const results = await updateContribution.contributionUpdate(id, user, input, file);
       return results;
     },
   },

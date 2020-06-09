@@ -1,9 +1,17 @@
 import { verify } from 'jsonwebtoken';
 import models from '../../sequelize/models';
-import { generateToken, sendRefreshTokenAsCookie } from '../../helpers/user.helpers';
+import {
+  generateToken,
+  sendRefreshTokenAsCookie,
+} from '../../helpers/user.helpers';
 
+const {
+  REFRESH_TOKEN_SECRET_KEY,
+  ACCESS_TOKEN_SECRET_KEY,
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} = process.env;
 
-const { REFRESH_TOKEN_SECRET_KEY, ACCESS_TOKEN_SECRET_KEY } = process.env;
 export const refreshToken = async (req, res) => {
   const token = req.cookies.jid;
   if (!token) {
@@ -20,18 +28,26 @@ export const refreshToken = async (req, res) => {
 
   const user = await models.User.findOne({ where: { id: payload.id } });
 
-  if (!user || (user.dataValues.tokenVersion !== payload.tokenVersion)) {
+  if (!user || user.dataValues.tokenVersion !== payload.tokenVersion) {
     return res.send({ ok: false, accessToken: '' });
   }
 
   const { password, ...rest } = user.dataValues;
 
-  const refreshTkn = await generateToken(rest, REFRESH_TOKEN_SECRET_KEY, '7d');
+  const refreshTkn = await generateToken(
+    rest,
+    REFRESH_TOKEN_SECRET_KEY,
+    REFRESH_TOKEN_EXPIRES_IN,
+  );
 
   sendRefreshTokenAsCookie(res, refreshTkn);
 
   return res.send({
     ok: true,
-    accessToken: await generateToken(rest, ACCESS_TOKEN_SECRET_KEY, '15m'),
+    accessToken: await generateToken(
+      rest,
+      ACCESS_TOKEN_SECRET_KEY,
+      ACCESS_TOKEN_EXPIRES_IN,
+    ),
   });
 };
