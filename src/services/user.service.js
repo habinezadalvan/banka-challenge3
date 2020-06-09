@@ -4,7 +4,6 @@ import {
   ForbiddenError,
   ApolloError,
 } from 'apollo-server-express';
-import { Op } from 'sequelize';
 import {
   comparePassword,
   generateToken,
@@ -20,6 +19,7 @@ import {
   forgotPasswordSubject,
 } from '../utils/mailer/nodemailer.paragraphs';
 import { imageUpload } from '../utils/image.utils';
+import { cursorBasedPagination } from '../helpers/pagination.helper';
 
 const {
   ACCESS_TOKEN_SECRET_KEY,
@@ -120,15 +120,8 @@ export class User {
   }
 
   async allUsers(createdAt) {
-    const options = {
-      order: [['createdAt', 'DESC']],
-      where: {},
-    };
-    if (createdAt) {
-      options.where.createdAt = {
-        [Op.lt]: new Date(Number(createdAt)),
-      };
-    }
+    const options = cursorBasedPagination(createdAt);
+
     const users = await models.User.findAll(options, { raw: true });
     return users;
   }

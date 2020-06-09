@@ -3,6 +3,7 @@ import { ApolloError, ForbiddenError } from 'apollo-server-express';
 import models from '../sequelize/models';
 import { getFilename } from '../utils/image.utils';
 import { GeneralClass } from './generalClass.service';
+import { cursorBasedPagination } from '../helpers/pagination.helper';
 
 
 export class Contribution extends GeneralClass {
@@ -34,5 +35,27 @@ export class Contribution extends GeneralClass {
       { where: { id }, returning: true },
     );
     return value[0].dataValues;
+  }
+
+  async findGeneralMethod(id, modelName) {
+    const results = await models[`${modelName}`].findOne({ where: { id } });
+    return results;
+  }
+
+  async getContribution(id) {
+    const modelName = {
+      contribution: 'Contribution',
+    };
+
+    const contribution = await this.findGeneralMethod(id, modelName.contribution);
+    if (!contribution) throw new ApolloError('Contribution not found!');
+    return contribution.dataValues;
+  }
+
+  async allContributions(createdAt) {
+    const option = cursorBasedPagination(createdAt);
+
+    const contributions = await models.Contribution.findAll(option, { raw: true });
+    return contributions;
   }
 }
