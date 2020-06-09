@@ -13,6 +13,10 @@ let secretaryToken;
 
 let userTwoToken;
 
+const createdAt = new Date(Date.now()).getTime();
+
+let contribution;
+
 describe('Contribution Test Suite', () => {
   const input = {
     email: 'example@example.com',
@@ -161,6 +165,55 @@ describe('Contribution Test Suite', () => {
       expect(err.constructor.name).toEqual('ForbiddenError');
       expect(err.message).toEqual('Sorry, this contribution does not belong to you!');
     }
+  });
+
+  // fetch contributions
+
+  it('should fetch a single contribution', async () => {
+    jest.spyOn(contributionResolver.Query, 'getContribution');
+    contribution = await contributionResolver.Query.getContribution(
+      null,
+      {
+        id: 1,
+      },
+      { token: userToken.accessToken },
+    );
+
+    expect(contribution.amount).toEqual('10000');
+  });
+  it('should throw an error when the contribution does not exist', async () => {
+    try {
+      jest.spyOn(contributionResolver.Query, 'getContribution');
+      contribution = await contributionResolver.Query.getContribution(
+        null,
+        {
+          id: 0,
+        },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Contribution not found!');
+    }
+  });
+  it('should fetch all contributions', async () => {
+    jest.spyOn(contributionResolver.Query, 'contributions');
+    const results = await contributionResolver.Query.contributions(
+      null,
+      {
+        createdAt,
+      },
+      { token: userToken.accessToken },
+    );
+    expect(results[0].dataValues).toHaveProperty('approved');
+  });
+
+  it('should fetch contribution owner', async () => {
+    jest.spyOn(contributionResolver.Contribution, 'owner');
+    const results = await contributionResolver.Contribution.owner(
+      contribution, null,
+      { token: userToken.accessToken },
+    );
+    expect(results.dataValues).toHaveProperty('firstName');
   });
 });
 
