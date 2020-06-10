@@ -48,6 +48,28 @@ export const testUser = {
   },
 };
 
+
+export const testUserThree = {
+  dataValues: {
+    id: 2,
+    firstName: 'John',
+    lastName: 'Doe',
+    userName: 'johndoe',
+    email: 'example@example.com',
+    password: 'fakepassword',
+    phoneNo: '+230494484475',
+    avatar: 'image',
+    accountStatus: null,
+    positionStatus: 'active',
+    verified: true,
+    savingId: 0,
+    createdAt: '2020-05-24T15:21:38.774Z',
+    updatedAt: '2020-05-24T15:21:38.774Z',
+    positionId: 0,
+    roleId: 0,
+  },
+};
+
 export const testUserTwo = {
   dataValues: {
     id: 2,

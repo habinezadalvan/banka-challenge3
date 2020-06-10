@@ -251,6 +251,30 @@ describe('Approve contribution', () => {
     );
     expect(results.approved).toBe(true);
   });
+
+  it('should test the case where the contribution is already approved', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'approveContribution');
+    const results = await contributionResolver.Mutation.approveContribution(
+      null,
+      {
+        id: 1,
+      },
+      { token: secretaryToken.accessToken },
+    );
+    expect(results.approved).toBe(false);
+  });
+
+  it('should approves the contribution in case where the user has a contribution but without savingId', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'approveContribution');
+    const results = await contributionResolver.Mutation.approveContribution(
+      null,
+      {
+        id: 2,
+      },
+      { token: userToken.accessToken },
+    );
+    expect(results.approved).toBe(true);
+  });
   it('should throw an error when a someone in charge of approving tries to approve a contribution which does not exist', async () => {
     try {
       jest.spyOn(contributionResolver.Mutation, 'approveContribution');

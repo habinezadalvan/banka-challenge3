@@ -2,7 +2,7 @@ module.exports = {
   up: (queryInterface) => queryInterface.bulkInsert('Contributions', [
     {
       userId: 1,
-      amount: 33000,
+      amount: 0,
       contributionOfMonthOf: new Date(),
       bankReceipt: 'thisisreceipt',
       createdAt: new Date(),
@@ -10,7 +10,7 @@ module.exports = {
     },
     {
       userId: 2,
-      amount: 35000,
+      amount: 0,
       contributionOfMonthOf: new Date(),
       bankReceipt: 'thisisreceipt',
       createdAt: new Date(),
