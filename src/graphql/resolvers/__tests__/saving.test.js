@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
-import { testUser, testUserTwo } from '../__mocks__/user.mocks';
+import { testUser, testUserThree } from '../__mocks__/user.mocks';
 import { res } from '../__mocks__/request.response.mocks';
 
 const { USER_PASSWORD } = process.env;
@@ -26,9 +26,9 @@ describe('savings Test Suite', () => {
   });
   it('should return null when there is no savings', async () => {
     jest.spyOn(userResolver.User, 'userSavings');
-    const results = await userResolver.User.userSavings(testUserTwo, null, {
+    const results = await userResolver.User.userSavings(testUserThree, null, {
       token: userToken.accessToken,
     });
-    expect(results).toEqual([]);
+    expect(results).toBe(null);
   });
 });
