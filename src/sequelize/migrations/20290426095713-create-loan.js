@@ -46,6 +46,18 @@ module.exports = {
       type: Sequelize.BIGINT,
       defaultValue: 0,
     },
+    rejected: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+    closed: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+    motif: {
+      type: Sequelize.TEXT,
+      allowNull: true,
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

@@ -4,6 +4,7 @@ export const loanMutations = gql`
     extend type Mutation{
         addLoan(input: LoanInput):Loan
         changeInterestRate(rate: Int!): String
+        updateLoan(id: ID!, input: UpdateLoanInput): Loan
     }
 
 `;

@@ -17,17 +17,17 @@ const createdAt = new Date(Date.now()).getTime();
 
 let contribution;
 
+const input = {
+  email: 'example@example.com',
+  password: USER_PASSWORD,
+};
+
+const userTwoInput = {
+  email: 'example@example2.com',
+  password: USER_PASSWORD,
+};
+
 describe('Contribution Test Suite', () => {
-  const input = {
-    email: 'example@example.com',
-    password: USER_PASSWORD,
-  };
-
-  const userTwoInput = {
-    email: 'example@example2.com',
-    password: USER_PASSWORD,
-  };
-
   const updateContributionInput = {
     amount: 10000,
   };
@@ -39,7 +39,11 @@ describe('Contribution Test Suite', () => {
       { id: 2, input: { accountStatus: 'activated' } },
       { token: userToken.accessToken },
     );
-    userTwoToken = await userResolver.Mutation.userLogin(null, { input: userTwoInput }, { res });
+    userTwoToken = await userResolver.Mutation.userLogin(
+      null,
+      { input: userTwoInput },
+      { res },
+    );
   });
 
   afterAll(async () => {
@@ -101,7 +105,9 @@ describe('Contribution Test Suite', () => {
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
-      expect(err.message).toEqual('Sorry, you can not approve your own contribution!');
+      expect(err.message).toEqual(
+        'Sorry, you can not approve your own contribution!',
+      );
     }
   });
   it('should throw an error when someone who is not in charger tries to approve a contribution', async () => {
@@ -116,7 +122,9 @@ describe('Contribution Test Suite', () => {
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('AuthenticationError');
-      expect(err.message).toEqual('Sorry, you are neither a secretary nor fiance personnel.');
+      expect(err.message).toEqual(
+        'Sorry, you are neither a secretary nor fiance personnel.',
+      );
     }
   });
 
@@ -163,7 +171,9 @@ describe('Contribution Test Suite', () => {
       );
     } catch (err) {
       expect(err.constructor.name).toEqual('ForbiddenError');
-      expect(err.message).toEqual('Sorry, this contribution does not belong to you!');
+      expect(err.message).toEqual(
+        'Sorry, this contribution does not belong to you!',
+      );
     }
   });
 
@@ -210,16 +220,16 @@ describe('Contribution Test Suite', () => {
   it('should fetch contribution owner', async () => {
     jest.spyOn(contributionResolver.Contribution, 'owner');
     const results = await contributionResolver.Contribution.owner(
-      contribution, null,
+      contribution,
+      null,
       { token: userToken.accessToken },
     );
     expect(results.dataValues).toHaveProperty('firstName');
   });
 });
 
-
 describe('Approve contribution', () => {
-  const input = {
+  const secretaryInput = {
     email: 'example@example2.com',
     password: USER_PASSWORD,
   };
@@ -229,7 +239,11 @@ describe('Approve contribution', () => {
       { id: 2, input: { accountStatus: 'activated', positionId: 3 } },
       { token: userToken.accessToken },
     );
-    secretaryToken = await userResolver.Mutation.userLogin(null, { input }, { res });
+    secretaryToken = await userResolver.Mutation.userLogin(
+      null,
+      { input: secretaryInput },
+      { res },
+    );
   });
 
   afterAll(async () => {
@@ -288,6 +302,62 @@ describe('Approve contribution', () => {
     } catch (err) {
       expect(err.constructor.name).toEqual('ApolloError');
       expect(err.message).toEqual('Contribution not found!');
+    }
+  });
+});
+
+// inactive secretary
+
+describe('inactive secretary', () => {
+  beforeAll(async () => {
+    await userResolver.Mutation.updateUser(
+      null,
+      {
+        id: 2,
+        input: {
+          positionStatus: 'inactive',
+          roleId: 1,
+          positionId: 3,
+          accountStatus: 'activated',
+        },
+      },
+      { token: userToken.accessToken },
+    );
+    secretaryToken = await userResolver.Mutation.userLogin(
+      null,
+      { input: userTwoInput },
+      { res },
+    );
+  });
+  afterAll(async () => {
+    await userResolver.Mutation.updateUser(
+      null,
+      {
+        id: 2,
+        input: {
+          positionStatus: 'active',
+          roleId: 2,
+          positionId: 1,
+          accountStatus: 'disactivated',
+        },
+      },
+      { token: userToken.accessToken },
+    );
+  });
+
+  it('should throw an error when a someone in charge of approving tries to approve a contribution when his or her position status is inactive', async () => {
+    try {
+      jest.spyOn(contributionResolver.Mutation, 'approveContribution');
+      await contributionResolver.Mutation.approveContribution(
+        null,
+        {
+          id: 1,
+        },
+        { token: secretaryToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('AuthenticationError');
+      expect(err.message).toEqual('Sorry, your position is no longer active.');
     }
   });
 });

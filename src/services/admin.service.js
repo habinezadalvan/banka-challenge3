@@ -26,7 +26,8 @@ export class Admin extends User {
     return rest;
   }
 
-  async updateUser(id, input) {
+  async updateUser(id, input, loggedUser) {
+    if (loggedUser.id === Number(id)) throw new ForbiddenError('Sorry, you can not update your own account');
     const { roleId, positionId } = input;
     const checkUser = await findUser({ id });
     if (!checkUser) throw new ApolloError('Sorry, That user does  not exists!');

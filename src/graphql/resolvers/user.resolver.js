@@ -67,7 +67,7 @@ export const userResolver = {
       isAdmin(loggedUser);
       generalValidator(input, updateUserSchema);
       const adminInstance = new Admin(input);
-      const updatedUser = await adminInstance.updateUser(id, input);
+      const updatedUser = await adminInstance.updateUser(id, input, loggedUser);
       return addTokenToResults(updatedUser);
     },
     deleteUser: async (_, { id }, { token }) => {
