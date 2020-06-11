@@ -9,14 +9,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    year: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    requestDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
     paymentDeadLine: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -31,15 +23,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     paidAmount: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+    },
+    interestRate: {
+      type: DataTypes.INTEGER,
+      defaultValue: 2,
+    },
+    interest: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   }, {});
-  Loan.associate = (models) => {
-    Loan.belongsTo(models.User, {
-      targetKey: 'id',
-      as: 'loanOwner',
-      onDelete: 'CASCADE',
-    });
+  Loan.associate = () => {
   };
   return Loan;
 };

@@ -32,10 +32,16 @@ export class Admin extends User {
     if (!checkUser) throw new ApolloError('Sorry, That user does  not exists!');
     const isExisted = await findRoleAndPosition({ roleId, positionId });
     if (
-      (roleId && positionId && (!isExisted.firstResults || !isExisted.secondResults))
-      || ((roleId && !isExisted.firstResults)
-      || (positionId && !isExisted.firstResults))
-    ) throw new ForbiddenError('Sorry, you can not update this user. There is a problem in the role or position you are providing');
+      (roleId
+        && positionId
+        && (!isExisted.firstResults || !isExisted.secondResults))
+      || (roleId && !isExisted.firstResults)
+      || (positionId && !isExisted.firstResults)
+    ) {
+      throw new ForbiddenError(
+        'Sorry, you can not update this user. There is a problem in the role or position you are providing',
+      );
+    }
 
     const [, value] = await models.User.update(
       { ...this, input },
@@ -50,5 +56,13 @@ export class Admin extends User {
     if (!checkUser) throw new ApolloError('Sorry, That user does  not exists!');
     await models.User.destroy({ where: { id } });
     return 'User deleted successfully!';
+  }
+
+  async updateLoanInterestRate(rate) {
+    const [, value] = await models.Loan.update(
+      { interestRate: Number(rate) },
+      { where: { id: 1 }, returning: true },
+    );
+    return `The current interest rate is ${value[0].dataValues.interestRate}%`;
   }
 }

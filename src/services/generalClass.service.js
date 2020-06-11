@@ -4,7 +4,7 @@ import models from '../sequelize/models';
 export class GeneralClass {
   constructor(input) {
     // contribution input
-    this.amount = input.amount; // works for savings as well
+    this.amount = input.amount; // works for savings and loan as well
     this.paymentOption = input.paymentOption;
     this.contributionOfMonthOf = input.contributionOfMonthOf;
 
@@ -27,6 +27,9 @@ export class GeneralClass {
 
     this.positionId = input.positionId;
     this.userId = input.userId;
+
+    // laon input
+    this.paymentDeadLine = input.paymentDeadLine;
   }
 
   async findGeneralMethod(id, modelName) {
