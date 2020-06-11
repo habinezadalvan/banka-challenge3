@@ -13,6 +13,7 @@ export const contributionTypes = gql`
         bankReceipt: String
         contributionOfMonthOf: String!
         owner: User
+        createdAt: String
     }
 
     input ContributionInput {

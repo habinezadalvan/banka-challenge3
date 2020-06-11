@@ -24,23 +24,27 @@ module.exports = {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
-    year: {
-      type: Sequelize.INTEGER,
-    },
-    requestDate: {
-      type: Sequelize.DATE,
-    },
     paymentDeadLine: {
       type: Sequelize.DATE,
     },
     paid: {
       type: Sequelize.BOOLEAN,
+      defaultValue: false,
     },
     expectedAmountToBePaid: {
       type: Sequelize.BIGINT,
     },
     paidAmount: {
       type: Sequelize.BIGINT,
+      allowNull: true,
+    },
+    interestRate: {
+      type: Sequelize.INTEGER,
+      defaultValue: 2,
+    },
+    interest: {
+      type: Sequelize.BIGINT,
+      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,
