@@ -17,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    rejected: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    closed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    motif: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     expectedAmountToBePaid: {
       type: DataTypes.INTEGER,
       allowNull: false,

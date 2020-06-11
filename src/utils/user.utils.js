@@ -36,5 +36,6 @@ export const addTokenToResults = async (res) => {
 
 export const isSecretaryOrFinance = (user) => {
   if ((user.positionId !== 3) && (user.positionId !== 4)) throw new AuthenticationError('Sorry, you are neither a secretary nor fiance personnel.');
+  if (user.positionStatus !== 'active') throw new AuthenticationError('Sorry, your position is no longer active.');
   return true;
 };

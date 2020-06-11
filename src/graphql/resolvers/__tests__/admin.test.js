@@ -53,6 +53,25 @@ describe('admin', () => {
     expect(updatedUser.accountStatus).toEqual('activated');
   });
 
+  it('should throw an when an admin tries to update his own account', async () => {
+    try {
+      await jest.spyOn(userResolver.Mutation, 'updateUser');
+      await userResolver.Mutation.updateUser(
+        null,
+        {
+          id: 1,
+          input: {
+            accountStatus: 'activated',
+          },
+        },
+        { token: adminToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.constructor.name).toEqual('ForbiddenError');
+      expect(err.message).toEqual('Sorry, you can not update your own account');
+    }
+  });
+
   it('should throw an when an admin tries to update a user with non-existing role or position', async () => {
     try {
       await jest.spyOn(userResolver.Mutation, 'updateUser');

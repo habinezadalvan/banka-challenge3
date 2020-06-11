@@ -22,5 +22,11 @@ export const loanResolvers = {
       const results = interestRate.updateLoanInterestRate(rate);
       return results;
     },
+    updateLoan: async (_, { id, input }, { token }) => {
+      const loggedInUser = await decodeToken(token);
+      const loanUpdate = new Loan(input);
+      const results = loanUpdate.updateLoan(id, loggedInUser);
+      return results;
+    },
   },
 };
