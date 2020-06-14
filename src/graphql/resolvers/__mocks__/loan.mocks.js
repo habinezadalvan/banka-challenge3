@@ -6,3 +6,8 @@ export const loanInput = {
 export const updateLoanInput = {
   amount: 200000,
 };
+
+export const loanInput2 = {
+  amount: 500000,
+  paymentDeadLine: `${new Date()}`,
+};

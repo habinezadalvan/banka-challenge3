@@ -5,6 +5,7 @@ export const loanMutations = gql`
         addLoan(input: LoanInput):Loan
         changeInterestRate(rate: Int!): String
         updateLoan(id: ID!, input: UpdateLoanInput): Loan
+        approveLoan(id: ID!): Loan
     }
 
 `;
