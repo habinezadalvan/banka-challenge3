@@ -24,3 +24,60 @@ export const loanParams = (values) => {
     myInterestRate,
   };
 };
+
+export const calculateNewDeadLine = (
+  expectedDeadlineBeforeApproval,
+  loanRequestedDate,
+) => {
+  const daysDifference = timeInDays(
+    expectedDeadlineBeforeApproval,
+    loanRequestedDate,
+  );
+
+  const roundedTimeDiffence = Math.round(daysDifference) * Math.sign(daysDifference);
+
+  const dayInMillseconds = 1000 * 60 * 60 * 24;
+  const roundedTimeDiffenceInMillseconds = roundedTimeDiffence * dayInMillseconds;
+  const date = new Date();
+  const currentTime = date.getTime();
+
+  const futureTime = currentTime + roundedTimeDiffenceInMillseconds;
+  date.setTime(futureTime);
+  return date;
+};
+
+export const postDeadLineCharges = async (id) => {
+  const loan = await findLoan(id);
+
+  const {
+    amount,
+    interestRate,
+    paymentDeadLine,
+    interest,
+    expectedAmountToBePaid,
+    paid,
+    approved,
+  } = loan;
+
+  const monthlyInterest = Math.round(
+    (Number(amount) * Number(interestRate)) / 100,
+  );
+
+  const newAmountToPay = Number(expectedAmountToBePaid) + Number(monthlyInterest);
+
+  const newInterest = Number(interest) + Number(monthlyInterest);
+
+  const date = new Date(paymentDeadLine);
+
+  const now = new Date(Date.now());
+
+  if (approved === true && date < now && paid === false) {
+    await models.Loan.update(
+      {
+        interest: newInterest,
+        expectedAmountToBePaid: newAmountToPay,
+      },
+      { where: { id }, returning: true },
+    );
+  }
+};

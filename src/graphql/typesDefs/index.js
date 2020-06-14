@@ -5,6 +5,7 @@ import { allTypes } from './types/index';
 export const typeDefs = [
   allQueries.userQueries,
   allQueries.contributionQueries,
+  allQueries.loanQueris,
   allMutations.userMutations,
   allMutations.contributionMutation,
   allMutations.loanMutations,

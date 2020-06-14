@@ -1,8 +1,15 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable class-methods-use-this */
-import { ForbiddenError } from 'apollo-server-express';
+import { ForbiddenError, ApolloError } from 'apollo-server-express';
 import models from '../sequelize/models';
 import { GeneralClass } from './generalClass.service';
-import { findLoan, loanParams } from '../utils/loan.utils';
+import {
+  findLoan,
+  loanParams,
+  calculateNewDeadLine,
+} from '../utils/loan.utils';
+import { updateInterest } from '../helpers/cron.helper';
+
 
 export class Loan extends GeneralClass {
   async loanRequest(user) {
@@ -20,17 +27,6 @@ export class Loan extends GeneralClass {
 
     const { interest, amountToPay, myInterestRate } = loanParams(parameters);
 
-    // create count down
-
-    // if count down is at zero I will start to count the time
-    // then duration will be duration in months + counted months after the countdown
-    // then update the expected amount to pay and interest..
-
-    // loan count down should start after the loan was approved
-
-    // check the loan createdAT and loan approved time and make the difference
-    // then update expected paying date by adding the difference to expected paying date.
-
     const laonData = {
       amount,
       paymentDeadLine,
@@ -44,6 +40,12 @@ export class Loan extends GeneralClass {
     return loan.dataValues;
   }
 
+  async getLoan(id) {
+    updateInterest(id);
+    const loan = await findLoan(id);
+    return loan;
+  }
+
   async updateLoan(id, user) {
     const { amount, paymentDeadLine, motif } = this;
     const loan = await findLoan(id);
@@ -53,7 +55,12 @@ export class Loan extends GeneralClass {
         'Sorry, you can not update this loan request. You are not the owner.',
       );
     }
-    if (loan.approved === true) throw new ForbiddenError('Sorry, you can not update this loan request. It has been approved already. If you still need to do the changes, send a closure request.');
+    if (loan.approved === true) {
+      throw new ForbiddenError(
+        'Sorry, you can not update this loan request. It has been approved already. If you still need to do the changes, send a closure request.',
+      );
+    }
+
 
     const loanIssuedInterestRate = loan.interestRate;
 
@@ -73,9 +80,47 @@ export class Loan extends GeneralClass {
     }
 
     const { interest, amountToPay } = loanParams(parameters);
-    const [, value] = await models.Loan.update({
-      amount, interest, expectedAmountToBePaid: amountToPay, motif,
-    }, { where: { id }, returning: true });
+    const [, value] = await models.Loan.update(
+      {
+        amount,
+        interest,
+        expectedAmountToBePaid: amountToPay,
+        motif,
+      },
+      { where: { id }, returning: true },
+    );
+
+    return value[0].dataValues;
+  }
+
+  async approvingLoan(id, loggedInUser) {
+    const loan = await findLoan(id);
+    if (loan.userId === loggedInUser.id) throw new ForbiddenError('Sorry, you can not approve your own loan.');
+    if (loan.approved === true) {
+      throw new ApolloError(
+        'You can not approve this loan, it has been approved already',
+      );
+    }
+
+    const {
+      createdAt, paymentDeadLine,
+    } = loan;
+    const loanRequestedDate = createdAt;
+    const expectedDeadlineBeforeApproval = paymentDeadLine;
+
+    const updatedDeadLine = calculateNewDeadLine(
+      expectedDeadlineBeforeApproval,
+      loanRequestedDate,
+    );
+
+    const [, value] = await models.Loan.update(
+      {
+        paymentDeadLine: updatedDeadLine,
+        approvedAt: Date.now(),
+        approved: true,
+      },
+      { where: { id }, returning: true },
+    );
 
     return value[0].dataValues;
   }

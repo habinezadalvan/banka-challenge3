@@ -39,3 +39,9 @@ export const isSecretaryOrFinance = (user) => {
   if (user.positionStatus !== 'active') throw new AuthenticationError('Sorry, your position is no longer active.');
   return true;
 };
+
+export const isLoanManager = (user) => {
+  if (user.positionId !== 5) throw new AuthenticationError('Sorry, you are not a loan manager.');
+  if (user.positionStatus !== 'active') throw new AuthenticationError('Sorry, your position is no longer active.');
+  return true;
+};

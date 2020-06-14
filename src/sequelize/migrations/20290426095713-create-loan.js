@@ -24,6 +24,10 @@ module.exports = {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
+    approvedAt: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     paymentDeadLine: {
       type: Sequelize.DATE,
     },

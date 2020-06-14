@@ -24,6 +24,12 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      name: 'loan manager',
+      description: 'this is the finance personnel',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   ]),
   down: (queryInterface) => queryInterface.bulkDelete('Positions', null, {}),
 };

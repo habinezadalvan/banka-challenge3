@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    approvedAt: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     paymentDeadLine: {
       type: DataTypes.DATE,
       allowNull: false,
