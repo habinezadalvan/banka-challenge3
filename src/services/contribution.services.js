@@ -8,6 +8,9 @@ import { cursorBasedPagination } from '../helpers/pagination.helper';
 
 export class Contribution extends GeneralClass {
   async payContribution(user, file) {
+    const { paymentOption } = this;
+    if ((paymentOption === undefined || paymentOption === 'bank') && file === undefined) throw new ApolloError('Please upload your bank receicpt');
+
     const filename = await getFilename(file);
     const contribution = await models.Contribution.create(
       { ...this, userId: user.id, bankReceipt: filename },

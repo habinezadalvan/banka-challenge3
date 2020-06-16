@@ -69,16 +69,35 @@ describe('Contribution Test Suite', () => {
     expect(results.dataValues).toHaveProperty('approved');
   });
 
-  it('should test pay contribution without bank receipt', async () => {
-    jest.spyOn(contributionResolver.Mutation, 'addContribution');
-    const results = await contributionResolver.Mutation.addContribution(
-      null,
-      {
-        input: contributionInput,
-      },
-      { token: userToken.accessToken },
-    );
-    expect(results.dataValues).toHaveProperty('approved');
+  // it('should test pay contribution without bank receipt', async () => {
+  //   jest.spyOn(contributionResolver.Mutation, 'addContribution');
+  //   const results = await contributionResolver.Mutation.addContribution(
+  //     null,
+  //     {
+  //       input: contributionInput,
+  //     },
+  //     { token: userToken.accessToken },
+  //   );
+  //   expect(results.dataValues).toHaveProperty('approved');
+  // });
+
+  it('should throw an error when trying to pay contribution with bank option without providing the receipt', async () => {
+    try {
+      jest.spyOn(contributionResolver.Mutation, 'addContribution');
+      await contributionResolver.Mutation.addContribution(
+        null,
+        {
+          input: {
+            amount: 50000,
+            contributionOfMonthOf: '2020-06-06 19:03:29.722+02',
+            paymentOption: 'bank',
+          },
+        },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Please upload your bank receicpt');
+    }
   });
 
   it('should test fetch user Contribution', async () => {

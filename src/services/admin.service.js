@@ -59,11 +59,33 @@ export class Admin extends User {
     return 'User deleted successfully!';
   }
 
-  async updateLoanInterestRate(rate) {
-    const [, value] = await models.Loan.update(
-      { interestRate: Number(rate) },
-      { where: { id: 1 }, returning: true },
-    );
-    return `The current interest rate is ${value[0].dataValues.interestRate}%`;
+  async changeLoanRatings(input) {
+    const { rate, action } = input;
+    const validActions = {
+      rate: 'rating',
+      allowedLoanPercentage: 'loanPercentage',
+    };
+
+    let message;
+
+    const isValidAction = Object.values(validActions).includes(action);
+
+    if (!isValidAction) throw new ForbiddenError('Invalid input');
+    if (action === validActions.rate) {
+      const [, value] = await models.Loan.update(
+        { interestRate: Number(rate) },
+        { where: { id: 1 }, returning: true },
+      );
+      message = `The current interest rate is ${value[0].dataValues.interestRate}%`;
+    }
+
+    if (action === validActions.allowedLoanPercentage) {
+      const [, value] = await models.Loan.update(
+        { allowPercentage: Number(rate) },
+        { where: { id: 1 }, returning: true },
+      );
+      message = `The current allowed loan is ${value[0].dataValues.allowPercentage}% of member's savings`;
+    }
+    return message;
   }
 }
