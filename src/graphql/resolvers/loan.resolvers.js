@@ -24,24 +24,30 @@ export const loanResolvers = {
       const results = loan.loanRequest(loggedInUser);
       return results;
     },
-    changeInterestRate: async (_, { rate }, { token }) => {
+    changeRatings: async (_, { input }, { token }) => {
       const loggedInUser = await decodeToken(token);
       await isAdmin(loggedInUser);
       const interestRate = new Admin({});
-      const results = interestRate.updateLoanInterestRate(rate);
+      const results = interestRate.changeLoanRatings(input);
       return results;
     },
-    updateLoan: async (_, { id, input }, { token }) => {
+    modifyLoan: async (_, { id, input }, { token }) => {
       const loggedInUser = await decodeToken(token);
       const loanUpdate = new Loan(input);
-      const results = loanUpdate.updateLoan(id, loggedInUser);
+      const results = loanUpdate.modifyLoan(id, loggedInUser);
       return results;
     },
-    approveLoan: async (_, { id }, { token }) => {
+    updateLoan: async (_, { input }, { token }) => {
       const loggedInUser = await decodeToken(token);
       await isLoanManager(loggedInUser);
-      const approvedLoan = new Loan({});
-      const results = approvedLoan.approvingLoan(id, loggedInUser);
+      const updatedLoan = new Loan({});
+      const results = updatedLoan.updateLoan(input, loggedInUser);
+      return results;
+    },
+    payLoan: async (_, { id, input, file }, { token }) => {
+      const loggedInUser = await decodeToken(token);
+      const payLoan = new Loan(input);
+      const results = payLoan.payingLoan(id, file, loggedInUser);
       return results;
     },
   },

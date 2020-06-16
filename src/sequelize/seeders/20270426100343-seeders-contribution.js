@@ -10,7 +10,7 @@ module.exports = {
     },
     {
       userId: 2,
-      amount: 0,
+      amount: 100000,
       contributionOfMonthOf: new Date(),
       bankReceipt: 'thisisreceipt',
       createdAt: new Date(),

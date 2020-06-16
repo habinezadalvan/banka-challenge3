@@ -3,9 +3,10 @@ import { gql } from 'apollo-server-express';
 export const loanMutations = gql`
     extend type Mutation{
         addLoan(input: LoanInput):Loan
-        changeInterestRate(rate: Int!): String
-        updateLoan(id: ID!, input: UpdateLoanInput): Loan
-        approveLoan(id: ID!): Loan
+        changeRatings(input: RatingsInput!): String
+        modifyLoan(id: ID!, input: ModifyLoanInput): Loan
+        updateLoan(input: UpdateLoanInput!): Loan
+        payLoan(id: ID!, input: payLoanInput!, file: Upload): Loan
     }
 
 `;

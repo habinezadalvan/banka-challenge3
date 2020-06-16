@@ -46,6 +46,10 @@ module.exports = {
       type: Sequelize.INTEGER,
       defaultValue: 2,
     },
+    allowPercentage: {
+      type: Sequelize.INTEGER,
+      defaultValue: 50,
+    },
     interest: {
       type: Sequelize.BIGINT,
       defaultValue: 0,
@@ -60,6 +64,14 @@ module.exports = {
     },
     motif: {
       type: Sequelize.TEXT,
+      allowNull: true,
+    },
+    paymentOption: {
+      type: Sequelize.ENUM('bank', 'mobile'),
+      defaultValue: 'bank',
+    },
+    bankReceipt: {
+      type: Sequelize.STRING,
       allowNull: true,
     },
     createdAt: {

@@ -3,7 +3,7 @@ export const loanInput = {
   paymentDeadLine: '2020-06-06 19:03:29.722+02',
 };
 
-export const updateLoanInput = {
+export const modifyLoanInput = {
   amount: 200000,
 };
 

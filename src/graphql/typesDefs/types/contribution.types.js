@@ -18,12 +18,12 @@ export const contributionTypes = gql`
 
     input ContributionInput {
         amount: Int!
-        paymentOptions: PaymentOptions
+        paymentOption: PaymentOptions
         contributionOfMonthOf: String!
     }
     input ContributionUpdateInput {
         amount: Int
-        paymentOptions: PaymentOptions
+        paymentOption: PaymentOptions
         contributionOfMonthOf: String
     }
 `;

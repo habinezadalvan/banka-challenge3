@@ -14,7 +14,7 @@ module.exports = {
     paymentDeadLine: '2020-04-22 19:10:25-07',
     expectedAmountToBePaid: 120000,
     approved: true,
-    paidAmount: 210000,
+    paidAmount: 120000,
     createdAt: new Date(),
     updatedAt: new Date(),
   }]),

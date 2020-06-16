@@ -45,9 +45,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 2,
     },
+    allowPercentage: {
+      type: DataTypes.INTEGER,
+      defaultValue: 50,
+    },
     interest: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+    },
+    paymentOption: {
+      type: DataTypes.ENUM({
+        values: ['bank', 'mobile'],
+      }),
+      defaultValue: 'bank',
+    },
+    bankReceipt: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   }, {});
   Loan.associate = () => {

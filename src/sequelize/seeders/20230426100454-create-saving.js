@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface) => queryInterface.bulkInsert('Savings', [{
-    amount: 0,
+    amount: 1000000,
     createdAt: new Date(),
     updatedAt: new Date(),
   }]),
