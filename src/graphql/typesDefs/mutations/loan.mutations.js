@@ -7,6 +7,7 @@ export const loanMutations = gql`
         modifyLoan(id: ID!, input: ModifyLoanInput): Loan
         updateLoan(input: UpdateLoanInput!): Loan
         payLoan(id: ID!, input: payLoanInput!, file: Upload): Loan
+        deleteLoan(id: ID!): Boolean
     }
 
 `;

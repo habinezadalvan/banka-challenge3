@@ -6,6 +6,7 @@ import {
   loanInput,
   modifyLoanInput,
   loanInput2,
+  fetchedLoan,
 } from '../__mocks__/loan.mocks';
 import { req, res } from '../__mocks__/request.response.mocks';
 import { postDeadLineCharges } from '../../../utils/loan.utils';
@@ -82,7 +83,9 @@ describe('Loan Test Suite', () => {
         { token: userToken.accessToken },
       );
     } catch (err) {
-      expect(err.message).toEqual('You can not request for a loan, you have an unpaid loan. Please paid the previous loan to request for another.');
+      expect(err.message).toEqual(
+        'You can not request for a loan, you have an unpaid loan. Please paid the previous loan to request for another.',
+      );
     }
   });
 
@@ -164,7 +167,9 @@ describe('Loan Test Suite', () => {
       { input: { rate: 40, action: 'loanPercentage' } },
       { token: userToken.accessToken },
     );
-    expect(results).toEqual('The current allowed loan is 40% of member\'s savings');
+    expect(results).toEqual(
+      "The current allowed loan is 40% of member's savings",
+    );
   });
 
   // update loan
@@ -233,7 +238,7 @@ describe('Loan Test Suite', () => {
     }
   });
 
-  // fetch a single loan
+  // fetch a single loan and all loans
 
   it('should fetch a loan', async () => {
     jest.spyOn(loanResolvers.Query, 'fetchLoan');
@@ -243,6 +248,25 @@ describe('Loan Test Suite', () => {
       { token: userTwoToken.accessToken },
     );
     expect(results).toHaveProperty('amount');
+  });
+  it('should fetch a loan owner', async () => {
+    jest.spyOn(loanResolvers.Loan, 'user');
+    const results = await loanResolvers.Loan.user(
+      fetchedLoan,
+      null,
+      { token: userTwoToken.accessToken },
+    );
+    expect(results.dataValues.id).toBe(1);
+  });
+
+  it('should fetch all loans', async () => {
+    jest.spyOn(loanResolvers.Query, 'fetchAllLoans');
+    const results = await loanResolvers.Query.fetchAllLoans(
+      null,
+      { createdAt: '1592380573278' },
+      { token: userTwoToken.accessToken },
+    );
+    expect(results).toEqual([]);
   });
 });
 
@@ -374,17 +398,6 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     expect(results.amount).toEqual('10000');
   });
 
-  // it('should approve the loan of loan manager', async () => {
-  //   jest.spyOn(loanResolvers.Mutation, 'updateLoan');
-  //   const results = await loanResolvers.Mutation.updateLoan(
-  //     null,
-  //     { input: updateLoanInput },
-  //     { token: userToken.accessToken },
-  //   );
-  //   expect(results.approved).toBe(true);
-  // });
-
-
   it('should throw an error when a loan manager tries to approve loan request that has been approved', async () => {
     try {
       jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -455,7 +468,9 @@ describe('Approve, close, reject, approve loan payment suite', () => {
         { token: userToken.accessToken },
       );
     } catch (err) {
-      expect(err.message).toEqual('You can not pay this loan. It has not been approved yet!');
+      expect(err.message).toEqual(
+        'You can not pay this loan. It has not been approved yet!',
+      );
     }
   });
 
@@ -502,7 +517,9 @@ describe('Approve, close, reject, approve loan payment suite', () => {
         { token: userToken.accessToken },
       );
     } catch (err) {
-      expect(err.message).toEqual('You can not request for this loan. The requested amount of money exceeds 50% of your savings. Your maximum amount should not exceed 280000 frw');
+      expect(err.message).toEqual(
+        'You can not request for this loan. The requested amount of money exceeds 50% of your savings. Your maximum amount should not exceed 280000 frw',
+      );
     }
   });
 
@@ -575,21 +592,11 @@ describe('Approve, close, reject, approve loan payment suite', () => {
         { token: userTwoToken.accessToken },
       );
     } catch (err) {
-      expect(err.message).toEqual('You can not approve this payment. Amount paid is not equal to the expected amount to be paid.');
+      expect(err.message).toEqual(
+        'You can not approve this payment. Amount paid is not equal to the expected amount to be paid.',
+      );
     }
   });
-
-  // approving loan payment
-
-  // it('should test approval of loan payment', async () => {
-  //   jest.spyOn(loanResolvers.Mutation, 'updateLoan');
-  //   const results = await loanResolvers.Mutation.updateLoan(
-  //     null,
-  //     { input: { id: 2, action: 'ApproveLoanPayment' } },
-  //     { token: userTwoToken.accessToken },
-  //   );
-  //   expect(results.paid).toBe(true);
-  // });
 
   it('should test disapproval of loan payment when it was already approved', async () => {
     jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -668,6 +675,42 @@ describe('Can not approve when account is inactive', () => {
       expect(err.constructor.name).toEqual('AuthenticationError');
       expect(err.message).toEqual('Sorry, your position is no longer active.');
     }
+  });
+
+  // delete a loan
+  it('should throw an error when someone tries to delete a loan which does not belong to him/her', async () => {
+    try {
+      jest.spyOn(loanResolvers.Mutation, 'deleteLoan');
+      await loanResolvers.Mutation.deleteLoan(
+        null,
+        { id: 4 },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, you can only delete your own loan.');
+    }
+  });
+
+  it('should throw an error when someone tries to delete a loan which has been approved', async () => {
+    try {
+      jest.spyOn(loanResolvers.Mutation, 'deleteLoan');
+      await loanResolvers.Mutation.deleteLoan(
+        null,
+        { id: 1 },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('You can not delete an approved loan');
+    }
+  });
+  it('should delete a loan', async () => {
+    jest.spyOn(loanResolvers.Mutation, 'deleteLoan');
+    const results = await loanResolvers.Mutation.deleteLoan(
+      null,
+      { id: 4 },
+      { token: userTwoToken.accessToken },
+    );
+    expect(results).toBe(true);
   });
 });
 

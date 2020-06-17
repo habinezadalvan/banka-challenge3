@@ -15,6 +15,9 @@ import {
   checkLoan,
 } from '../utils/loan.utils';
 import { updateInterest } from '../helpers/cron.helper';
+import { findUser } from '../utils/user.utils';
+import { cursorBasedPagination } from '../helpers/pagination.helper';
+
 
 export class Loan extends GeneralClass {
   async loanRequest(user) {
@@ -175,5 +178,24 @@ export class Loan extends GeneralClass {
     );
 
     return value[0].dataValues;
+  }
+
+  async deleteLoan(id, user) {
+    const { userId, approved } = await findLoan(id);
+    if (userId !== user.id) throw new ForbiddenError('Sorry, you can only delete your own loan.');
+    if (approved) throw new ForbiddenError('You can not delete an approved loan');
+    return !!await models.Loan.destroy({ where: { id } });
+  }
+
+  async getOwner(id) {
+    const user = await findUser({ id });
+    return user;
+  }
+
+  async allLoans(createdAt) {
+    const option = cursorBasedPagination(createdAt);
+
+    const loans = await models.Loan.findAll(option, { raw: true });
+    return loans;
   }
 }
