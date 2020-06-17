@@ -50,5 +50,11 @@ export const loanResolvers = {
       const results = payLoan.payingLoan(id, file, loggedInUser);
       return results;
     },
+    deleteLoan: async (_, { id }, { token }) => {
+      const user = await decodeToken(token);
+      const loan = new Loan({});
+      const results = loan.deleteLoan(id, user);
+      return results;
+    },
   },
 };

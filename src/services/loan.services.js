@@ -176,4 +176,11 @@ export class Loan extends GeneralClass {
 
     return value[0].dataValues;
   }
+
+  async deleteLoan(id, user) {
+    const { userId, approved } = await findLoan(id);
+    if (userId !== user.id) throw new ForbiddenError('Sorry, you can only delete your own loan.');
+    if (approved) throw new ForbiddenError('You can not delete an approved loan');
+    return !!await models.Loan.destroy({ where: { id } });
+  }
 }
