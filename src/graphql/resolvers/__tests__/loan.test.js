@@ -6,6 +6,7 @@ import {
   loanInput,
   modifyLoanInput,
   loanInput2,
+  fetchedLoan,
 } from '../__mocks__/loan.mocks';
 import { req, res } from '../__mocks__/request.response.mocks';
 import { postDeadLineCharges } from '../../../utils/loan.utils';
@@ -237,7 +238,7 @@ describe('Loan Test Suite', () => {
     }
   });
 
-  // fetch a single loan
+  // fetch a single loan and all loans
 
   it('should fetch a loan', async () => {
     jest.spyOn(loanResolvers.Query, 'fetchLoan');
@@ -247,6 +248,25 @@ describe('Loan Test Suite', () => {
       { token: userTwoToken.accessToken },
     );
     expect(results).toHaveProperty('amount');
+  });
+  it('should fetch a loan owner', async () => {
+    jest.spyOn(loanResolvers.Loan, 'user');
+    const results = await loanResolvers.Loan.user(
+      fetchedLoan,
+      null,
+      { token: userTwoToken.accessToken },
+    );
+    expect(results.dataValues.id).toBe(1);
+  });
+
+  it('should fetch all loans', async () => {
+    jest.spyOn(loanResolvers.Query, 'fetchAllLoans');
+    const results = await loanResolvers.Query.fetchAllLoans(
+      null,
+      { createdAt: '1592380573278' },
+      { token: userTwoToken.accessToken },
+    );
+    expect(results).toEqual([]);
   });
 });
 

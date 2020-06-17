@@ -14,6 +14,12 @@ export const loanResolvers = {
       const results = loan.getLoan(id);
       return results;
     },
+    fetchAllLoans: async (_, { createdAt }, { token }) => {
+      await decodeToken(token);
+      const loans = new Loan({});
+      const results = loans.allLoans(createdAt);
+      return results;
+    },
   },
 
   Mutation: {
@@ -54,6 +60,14 @@ export const loanResolvers = {
       const user = await decodeToken(token);
       const loan = new Loan({});
       const results = loan.deleteLoan(id, user);
+      return results;
+    },
+  },
+  Loan: {
+    user: async (loan, _, { token }) => {
+      await decodeToken(token);
+      const loanOwer = new Loan({});
+      const results = loanOwer.getOwner(loan.userId);
       return results;
     },
   },
