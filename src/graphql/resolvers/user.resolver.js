@@ -13,6 +13,7 @@ import { isAdmin, addTokenToResults } from '../../utils/user.utils';
 import { Saving } from '../../services/saving.services';
 import { GeneralClass } from '../../services/generalClass.service';
 import { RolePosition } from '../../services/rolePostion.service';
+import { findFile } from '../../utils/file.utils';
 
 const modelNames = {
   contribution: 'Contribution',
@@ -142,6 +143,15 @@ export const userResolver = {
       const event = new GeneralClass({});
       const res = await event.findGeneralMethod(user.id, modelNames.event);
       return res;
+    },
+
+    avatar: async (user, _, { token }) => {
+      await decodeToken(token);
+      const value = {
+        userId: Number(user.id),
+      };
+      const results = findFile(value);
+      return results;
     },
   },
 };

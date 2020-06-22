@@ -19,12 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       }),
       defaultValue: 'bank',
     },
-    bankReceipt: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
   }, {});
-  Contribution.associate = () => {
+  Contribution.associate = (models) => {
+    Contribution.hasOne(models.File, {
+      foreignKey: 'contributionId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
   return Contribution;
 };

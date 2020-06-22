@@ -4,6 +4,7 @@ import { contributionSchema, updateContributionSchema } from '../../utils/schema
 import { decodeToken } from '../../helpers/user.helpers';
 import { isSecretaryOrFinance } from '../../utils/user.utils';
 import { SecretaryAndFinance } from '../../services/secretaryAndFinance.service';
+import { findFile } from '../../utils/file.utils';
 
 const modelName = {
   userModel: 'User',
@@ -38,7 +39,6 @@ export const contributionResolver = {
       isSecretaryOrFinance(user);
       const approve = new SecretaryAndFinance({});
       const results = await approve.contributionUpdate(id, user);
-
       return results;
     },
     updateContribution: async (_, { id, input, file }, { token }) => {
@@ -54,6 +54,14 @@ export const contributionResolver = {
       await decodeToken(token);
       const owner = new Contribution({});
       const results = owner.findGeneralMethod(contribution.userId, modelName.userModel);
+      return results;
+    },
+    bankReceipt: async (contribution, _, { token }) => {
+      await decodeToken(token);
+      const value = {
+        contributionId: Number(contribution.id),
+      };
+      const results = findFile(value);
       return results;
     },
   },

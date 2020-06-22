@@ -18,7 +18,7 @@ import {
   forgotPasswordText,
   forgotPasswordSubject,
 } from '../utils/mailer/nodemailer.paragraphs';
-import { imageUpload } from '../utils/image.utils';
+import { getFile } from '../utils/image.utils';
 import { cursorBasedPagination } from '../helpers/pagination.helper';
 
 const {
@@ -134,19 +134,25 @@ export class User {
         'Sorry, you can not update this user. Email or username already exists',
       );
     }
-    const mimetypeRegex = /^(image)\/((jpeg)|(jpg)|(png))$/gi;
-
-    let filename;
-
-    if (file !== undefined) {
-      filename = await imageUpload(file, mimetypeRegex);
-    }
 
     const [, value] = await models.User.update(
-      { ...this, input, avatar: filename },
+      { ...this, input },
       { where: { id: loggedInUser.id }, returning: true },
     );
     const { password, ...rest } = value[0].dataValues;
+    const regex = /^(image|application)\/((jpeg)|(png)|(jpg))$/gi;
+
+    const image = await getFile(file, regex);
+
+    const [data] = await models.File.findOrCreate({
+      where: { userId: rest.id },
+      defaults: { userId: rest.id, file: image },
+      raw: true,
+    });
+
+    if (data) {
+      await models.File.update({ file: image }, { where: { id: data.id } });
+    }
     return rest;
   }
 

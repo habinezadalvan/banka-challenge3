@@ -4,6 +4,7 @@ import { isAdmin, isLoanManager } from '../../utils/user.utils';
 import { Admin } from '../../services/admin.service';
 import { generalValidator } from '../../helpers/general.validator';
 import { loanSchema } from '../../utils/schemas/loan.schemas';
+import { findFiles } from '../../utils/file.utils';
 
 
 export const loanResolvers = {
@@ -68,6 +69,14 @@ export const loanResolvers = {
       await decodeToken(token);
       const loanOwer = new Loan({});
       const results = loanOwer.getOwner(loan.userId);
+      return results;
+    },
+    bankReceipts: async (loan, _, { token }) => {
+      await decodeToken(token);
+      const value = {
+        loanId: Number(loan.id),
+      };
+      const results = findFiles(value);
       return results;
     },
   },

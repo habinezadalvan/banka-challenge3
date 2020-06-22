@@ -4,7 +4,7 @@
 import { ForbiddenError, ApolloError } from 'apollo-server-express';
 import models from '../sequelize/models';
 import { GeneralClass } from './generalClass.service';
-import { getFilename } from '../utils/image.utils';
+import { getFile } from '../utils/image.utils';
 import {
   findLoan,
   loanParams,
@@ -134,23 +134,17 @@ export class Loan extends GeneralClass {
     return results;
   }
 
-  async payingLoan(loanId, file, user) {
+  async payingLoan(paidLoanId, file, user) {
     const { amount, paymentOption } = this;
-
-    if (
-      (paymentOption === undefined || paymentOption === 'bank')
-      && file === undefined
-    ) throw new ApolloError('Please upload your bank receicpt');
-
-    const filename = await getFilename(file);
 
     const {
       userId,
       paidAmount,
       paymentOption: defaultPaymentOption,
-      bankReceipt,
       approved,
-    } = await findLoan(loanId);
+      expectedAmountToBePaid,
+      paid,
+    } = await findLoan(paidLoanId);
     if (userId !== user.id) throw new ForbiddenError('Sorry, you can only pay your own loan!');
 
     if (!approved) {
@@ -158,21 +152,38 @@ export class Loan extends GeneralClass {
         'You can not pay this loan. It has not been approved yet!',
       );
     }
-    let bankReceipts;
-
-    bankReceipt !== null
-      ? (bankReceipts = `${bankReceipt}|${filename}`)
-      : (bankReceipts = filename);
-
     const currentPaidAmount = Number(paidAmount) + Number(amount);
+
+    if (paymentOption !== 'bank' && paymentOption !== undefined) {
+      const [, value] = await models.Loan.update(
+        {
+          paidAmount: currentPaidAmount,
+          paymentOption: paymentOption || defaultPaymentOption,
+        },
+        {
+          where: { id: paidLoanId },
+          returning: true,
+        },
+      );
+      return value[0].dataValues;
+    }
+    if ((approved && paid === false) && (Number(paidAmount) >= Number(expectedAmountToBePaid))) throw new ForbiddenError('You can not over pay, you have already paid your loan. We are processing the approval.');
+    if (file === undefined) throw new ApolloError('Please upload your bank receicpt');
+
+    const regex = /^(image|application)\/((jpeg)|(png)|(jpg))$/gi;
+
+    const image = await getFile(file, regex);
+
+
+    await models.File.create({ loanId: paidLoanId, file: image });
+
     const [, value] = await models.Loan.update(
       {
         paidAmount: currentPaidAmount,
         paymentOption: paymentOption || defaultPaymentOption,
-        bankReceipt: bankReceipts,
       },
       {
-        where: { id: loanId },
+        where: { id: paidLoanId },
         returning: true,
       },
     );

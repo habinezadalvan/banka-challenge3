@@ -7,7 +7,7 @@ export const userTypes = gql`
         lastName: String
         userName: String
         email: String
-        avatar: String
+        avatar: File
         userRole: Role
         phoneNo: String
         userPosition: Position

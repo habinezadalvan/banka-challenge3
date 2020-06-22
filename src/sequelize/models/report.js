@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const Report = sequelize.define('Report', {
     title: {
@@ -7,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     type: {
       type: DataTypes.ENUM({
-        values: ['meeting', 'financial', 'laon'],
+        values: ['meeting', 'financial', 'laon', 'others'],
       }),
       defaultValue: 'meeting',
     },
@@ -15,12 +14,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    cover: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
   }, {});
-  Report.associate = () => {
-    // Report.belongsTo(models.User, {
-    //   targetKey: 'id',
-    //   onDelete: 'CASCADE',
-    // });
+  Report.associate = (models) => {
+    Report.hasMany(models.File, {
+      foreignKey: 'reportId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
   return Report;
 };

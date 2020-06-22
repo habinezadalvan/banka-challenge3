@@ -10,7 +10,7 @@ export const contributionTypes = gql`
         amount: Int
         approved: Boolean
         paymentOptions: PaymentOptions
-        bankReceipt: String
+        bankReceipt: File
         contributionOfMonthOf: String!
         owner: User
         createdAt: String

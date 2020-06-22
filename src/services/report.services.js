@@ -4,5 +4,7 @@ import { GeneralClass } from './generalClass.service';
 
 
 export class Report extends GeneralClass {
-
+  async createReport() {
+    return true;
+  }
 }
