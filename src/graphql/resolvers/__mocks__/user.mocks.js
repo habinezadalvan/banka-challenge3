@@ -17,6 +17,10 @@ export const loginDataThree = {
   password: USER_PASSWORD,
 };
 
+export const loginDataFour = {
+  email: 'example@example4.com',
+  password: USER_PASSWORD,
+};
 export const user = {
   firstName: 'firstname',
   lastName: 'lastname',
@@ -36,7 +40,6 @@ export const testUser = {
     email: 'example@example.com',
     password: 'fakepassword',
     phoneNo: '+230494484475',
-    avatar: 'image',
     accountStatus: null,
     positionStatus: 'active',
     verified: true,
@@ -58,7 +61,6 @@ export const testUserThree = {
     email: 'example@example.com',
     password: 'fakepassword',
     phoneNo: '+230494484475',
-    avatar: 'image',
     accountStatus: null,
     positionStatus: 'active',
     verified: true,
@@ -79,7 +81,6 @@ export const testUserTwo = {
     email: 'example@example.com',
     password: 'fakepassword',
     phoneNo: '+230494484475',
-    avatar: 'image',
     accountStatus: null,
     positionStatus: 'active',
     verified: true,

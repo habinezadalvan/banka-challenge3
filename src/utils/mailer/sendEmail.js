@@ -22,6 +22,6 @@ export const sendEmail = async (email, subject, message) => {
     };
     return NODE_ENV === 'test' ? true : await transporter.sendMail(mailOptions);
   } catch (err) {
-    throw new ApolloError(`This has occured during when sending email, ${err}`);
+    throw new ApolloError(`This has occured during when sending email, ${err.message}`);
   }
 };

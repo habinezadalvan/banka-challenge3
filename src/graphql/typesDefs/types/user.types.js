@@ -37,7 +37,7 @@ export const userTypes = gql`
         email: String!
         password: String!
         avatar: String
-        roleId: Int!
+        roleId: Int
         phoneNo: String
     }
     input UpdateUserInput {

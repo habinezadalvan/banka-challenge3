@@ -30,17 +30,17 @@ const {
 
 export class User {
   constructor(input) {
-    this.firstName = input.firstName;
-    this.lastName = input.lastName;
-    this.userName = input.userName && input.userName.toLowerCase();
-    this.email = input.email && input.email.toLowerCase();
-    this.password = input.password;
-    this.avatar = input.avatar;
-    this.phoneNo = input.phoneNo;
-    this.roleId = input.roleId;
-    this.positionId = input.positionId;
-    this.positionStatus = input.positionStatus;
-    this.accountStatus = input.accountStatus;
+    this.firstName = input && input.firstName;
+    this.lastName = input && input.lastName;
+    this.userName = input && input.userName && input.userName.toLowerCase();
+    this.email = input && input.email && input && input.email.toLowerCase();
+    this.password = input && input.password;
+    this.avatar = input && input.avatar;
+    this.phoneNo = input && input.phoneNo;
+    this.roleId = input && input.roleId;
+    this.positionId = input && input.positionId;
+    this.positionStatus = input && input.positionStatus;
+    this.accountStatus = input && input.accountStatus;
   }
 
   async login(res) {
@@ -79,7 +79,7 @@ export class User {
     if (!user) throw new AuthenticationError('Sorry, user not found!');
     const {
       password, createdAt, updatedAt, ...rest
-    } = user.dataValues;
+    } = user;
     await new User({}).revokeRefreshToken(rest.id);
     const message = await messageTemplate(rest, 'reset', forgotPasswordText);
     await sendEmail(email, forgotPasswordSubject, message);
@@ -109,7 +109,7 @@ export class User {
     const { id } = meLoggedIn;
     const me = await findUser({ id });
     if (!me) throw new ApolloError('User not found');
-    const { password, ...rest } = me.dataValues;
+    const { password, ...rest } = me;
     return rest;
   }
 
@@ -127,33 +127,42 @@ export class User {
   }
 
   async updateUserProfile(loggedInUser, input, file) {
-    const { email, userName } = input;
-    const isExisted = await findUser({ email, userName });
-    if (isExisted) {
-      throw new ApolloError(
-        'Sorry, you can not update this user. Email or username already exists',
+    let user;
+    if (input !== undefined) {
+      const { email, userName } = input;
+      const isExisted = await findUser({ email, userName });
+      if (isExisted) {
+        throw new ApolloError(
+          'Sorry, you can not update this user. Email or username already exists',
+        );
+      }
+      const [, value] = await models.User.update(
+        { ...this, input },
+        { where: { id: loggedInUser.id }, returning: true },
       );
+      const { password, ...rest } = value[0].dataValues;
+      user = rest;
     }
 
-    const [, value] = await models.User.update(
-      { ...this, input },
-      { where: { id: loggedInUser.id }, returning: true },
-    );
-    const { password, ...rest } = value[0].dataValues;
     const regex = /^(image|application)\/((jpeg)|(png)|(jpg))$/gi;
 
     const image = await getFile(file, regex);
 
     const [data] = await models.File.findOrCreate({
-      where: { userId: rest.id },
-      defaults: { userId: rest.id, file: image },
+      where: { userId: loggedInUser.id },
+      defaults: { userId: loggedInUser.id, file: image },
       raw: true,
     });
 
     if (data) {
       await models.File.update({ file: image }, { where: { id: data.id } });
     }
-    return rest;
+    const myInfo = await findUser({ id: loggedInUser.id });
+
+    const { password, ...rest } = myInfo;
+
+    user = rest;
+    return user;
   }
 
   async revokeRefreshToken(id) {

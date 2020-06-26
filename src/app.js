@@ -10,7 +10,7 @@ import { logger } from './logging/config';
 import { verifyDatabaseConnection } from './sequelize/config/verifydb';
 import 'dotenv/config';
 import router from './RESTful/routes';
-import './config/cloudinary.config';
+// import './config/cloudinary.config';
 
 logger();
 

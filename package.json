@@ -11,8 +11,9 @@
     "db:refresh": "sequelize db:migrate:undo:all && yarn migration && yarn undo:seeds && yarn seeds",
     "seeds": "sequelize db:seed:all",
     "undo:seeds": "sequelize db:seed:undo:all",
+    "cloudinaryDelete": "node ./src/utils/deleteCloudinaryImages.js ",
     "lint": "eslint .",
-    "test": "jest --coverage --runInBand --forceExit",
+    "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
     "pretest": "NODE_ENV=test yarn db:refresh"
   },
   "repository": {
