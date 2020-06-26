@@ -33,10 +33,6 @@ module.exports = {
       type: Sequelize.ENUM('bank', 'mobile'),
       defaultValue: 'bank',
     },
-    bankReceipt: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

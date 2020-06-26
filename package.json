@@ -11,8 +11,9 @@
     "db:refresh": "sequelize db:migrate:undo:all && yarn migration && yarn undo:seeds && yarn seeds",
     "seeds": "sequelize db:seed:all",
     "undo:seeds": "sequelize db:seed:undo:all",
+    "cloudinaryDelete": "node ./src/utils/deleteCloudinaryImages.js ",
     "lint": "eslint .",
-    "test": "jest --coverage --runInBand --forceExit",
+    "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
     "pretest": "NODE_ENV=test yarn db:refresh"
   },
   "repository": {
@@ -33,6 +34,7 @@
     "@hapi/joi": "^17.1.1",
     "apollo-server-express": "^2.11.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.22.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

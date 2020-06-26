@@ -20,6 +20,7 @@ export const findUser = async (values) => {
         userName: (values.userName && values.userName.toLowerCase()) || null,
       },
     },
+    raw: true,
   });
   return user;
 };

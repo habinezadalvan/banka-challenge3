@@ -10,5 +10,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
     },
   }, {});
+  Asset.associate = (models) => {
+    Asset.hasMany(models.File, {
+      foreignKey: 'assetId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+  };
   return Asset;
 };

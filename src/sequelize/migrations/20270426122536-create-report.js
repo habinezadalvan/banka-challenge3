@@ -22,12 +22,16 @@ module.exports = {
       allowNull: false,
     },
     type: {
-      type: Sequelize.ENUM('meeting', 'financial', 'loan'),
+      type: Sequelize.ENUM('meeting', 'financial', 'loan', 'others'),
       defaultValue: 'meeting',
     },
     content: {
       type: Sequelize.TEXT,
       allowNull: false,
+    },
+    cover: {
+      type: Sequelize.STRING,
+      allowNull: true,
     },
     createdAt: {
       allowNull: false,

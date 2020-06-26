@@ -5,11 +5,18 @@ export const reportTypes = gql`
         meeting
         financial
         laon
+        others
     }
     type Report {
         id: ID
         title: String
         type: ReportOptions
-        context: String
+        content: String
+        cover: String
+    }
+    input ReportInput{
+        title: String!
+        type: ReportOptions!
+        content: String!
     }
 `;

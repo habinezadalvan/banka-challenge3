@@ -242,7 +242,7 @@ describe('admin', () => {
     await jest.spyOn(userResolver.Mutation, 'deleteUser');
     const results = await userResolver.Mutation.deleteUser(
       null,
-      { id: 4 },
+      { id: 5 },
       { token: adminToken.accessToken },
     );
     expect(results).toEqual('User deleted successfully!');
@@ -252,7 +252,7 @@ describe('admin', () => {
       await jest.spyOn(userResolver.Mutation, 'deleteUser');
       await userResolver.Mutation.deleteUser(
         null,
-        { id: 4 },
+        { id: 5 },
         { token: adminToken.accessToken },
       );
     } catch (err) {

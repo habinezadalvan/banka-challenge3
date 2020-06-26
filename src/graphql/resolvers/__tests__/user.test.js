@@ -8,10 +8,15 @@ import {
   userUpdateProfile,
   loginData,
   fakeUser,
+  fetchedUser,
 } from '../__mocks__/user.mocks';
 import { req, res } from '../__mocks__/request.response.mocks';
 
-const { USER_PASSWORD, ACCESS_TOKEN_SECRET_KEY, ACCESS_TOKEN_EXPIRES_IN } = process.env;
+const {
+  USER_PASSWORD,
+  ACCESS_TOKEN_SECRET_KEY,
+  ACCESS_TOKEN_EXPIRES_IN,
+} = process.env;
 
 let fakeToken;
 
@@ -65,12 +70,12 @@ describe('User Test Suite', () => {
     }
   });
 
-  // forgot password test
+  // // forgot password test
 
   it('should test forgot password', async () => {
     jest.spyOn(userResolver.Mutation, 'forgotPassword');
     const results = await userResolver.Mutation.forgotPassword(null, {
-      email: input.email,
+      email: 'example@example.com',
     });
     expect(results).toEqual(
       'Comfirm your email to complete the process. We sent you a reset password email. N.B: The process will be cancelled in one day.',
@@ -85,7 +90,7 @@ describe('User Test Suite', () => {
     }
   });
 
-  // fetch a single user tests
+  // // fetch a single user tests
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'getUser');
@@ -94,7 +99,7 @@ describe('User Test Suite', () => {
       { id: 1 },
       { token: userToken.accessToken },
     );
-    expect(results.dataValues.id).toBe(1);
+    expect(results.id).toBe(1);
   });
 
   it('should throw an error when trying to fetch user who does not exist', async () => {
@@ -111,7 +116,7 @@ describe('User Test Suite', () => {
     }
   });
 
-  // fetch users tests
+  // // fetch users tests
 
   it('should fetch all users', async () => {
     jest.spyOn(userResolver.Query, 'users');
@@ -141,7 +146,7 @@ describe('User Test Suite', () => {
     }
   });
 
-  // user reset password tests
+  // // user reset password tests
 
   it('should test user reset password', async () => {
     jest.spyOn(userResolver.Mutation, 'resetPassword');
@@ -167,7 +172,7 @@ describe('User Test Suite', () => {
     }
   });
 
-  // update user profile
+  // // update user profile
 
   it('should test update user profile', async () => {
     jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
@@ -194,28 +199,16 @@ describe('User Test Suite', () => {
       );
     }
   });
-  it('should throw an error when a user tries to update his or her profile picture with non-supported format', async () => {
-    const invalidFileFormat = {
-      filename: 'Quarantine - Wasafi Feat Diamond Platnumz, Rayvanny, Mbosso, Lava Lava, Queen Darleen & Zuchu - YouTube.mkv',
-      mimetype: 'application/octet-stream',
-      encoding: '7bit',
-      createReadStream: () => {},
-    };
 
-    try {
-      jest.spyOn(userResolver.Mutation, 'UpdateUserProfile');
-      await userResolver.Mutation.UpdateUserProfile(
-        null,
-        { input: { email: 'newemail@gmail.com' }, file: invalidFileFormat },
-        { token: userToken.accessToken },
-      );
-    } catch (err) {
-      expect(err.constructor.name).toEqual('ApolloError');
-      expect(err.message).toEqual('File not supported!');
-    }
+  it('should get user profile picture', async () => {
+    jest.spyOn(userResolver.User, 'avatar');
+    const results = await userResolver.User.avatar(fetchedUser, null, {
+      token: userToken.accessToken,
+    });
+    expect(results).toHaveProperty('file');
   });
 
-  // me tests
+  // // me tests
 
   it('should fetch me', async () => {
     jest.spyOn(userResolver.Query, 'me');
@@ -227,7 +220,11 @@ describe('User Test Suite', () => {
 
   it('should throw an error when I do not exist', async () => {
     try {
-      fakeToken = await generateToken(fakeUser, ACCESS_TOKEN_SECRET_KEY, ACCESS_TOKEN_EXPIRES_IN);
+      fakeToken = await generateToken(
+        fakeUser,
+        ACCESS_TOKEN_SECRET_KEY,
+        ACCESS_TOKEN_EXPIRES_IN,
+      );
       jest.spyOn(userResolver.Query, 'me');
       await userResolver.Query.me(null, null, { token: fakeToken });
     } catch (err) {
@@ -237,7 +234,10 @@ describe('User Test Suite', () => {
   });
   it('Logout a user', async () => {
     jest.spyOn(userResolver.Mutation, 'logout');
-    const results = await userResolver.Mutation.logout(null, null, { req, res });
+    const results = await userResolver.Mutation.logout(null, null, {
+      req,
+      res,
+    });
     expect(results).toBe(true);
   });
 });

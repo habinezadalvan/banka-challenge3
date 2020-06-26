@@ -1,9 +1,13 @@
 import 'dotenv/config';
 import { userResolver } from '../user.resolver';
 import { contributionResolver } from '../contribution.resolver';
-import { fetchedUser } from '../__mocks__/user.mocks';
+import {
+  fetchedUser, loginData, loginDataTwo, loginDataFour,
+} from '../__mocks__/user.mocks';
 import { res } from '../__mocks__/request.response.mocks';
-import { file, contributionInput } from '../__mocks__/contribution.mocks';
+import {
+  file, contributionInputTwo, fetchedContribution, contributionInput,
+} from '../__mocks__/contribution.mocks';
 
 const { USER_PASSWORD } = process.env;
 
@@ -13,19 +17,11 @@ let secretaryToken;
 
 let userTwoToken;
 
+let userFourToken;
+
 const createdAt = new Date(Date.now()).getTime();
 
 let contribution;
-
-const input = {
-  email: 'example@example.com',
-  password: USER_PASSWORD,
-};
-
-const userTwoInput = {
-  email: 'example@example2.com',
-  password: USER_PASSWORD,
-};
 
 describe('Contribution Test Suite', () => {
   const updateContributionInput = {
@@ -33,7 +29,7 @@ describe('Contribution Test Suite', () => {
   };
 
   beforeAll(async () => {
-    userToken = await userResolver.Mutation.userLogin(null, { input }, { res });
+    userToken = await userResolver.Mutation.userLogin(null, { input: loginData }, { res });
     await userResolver.Mutation.updateUser(
       null,
       { id: 2, input: { accountStatus: 'activated' } },
@@ -41,7 +37,7 @@ describe('Contribution Test Suite', () => {
     );
     userTwoToken = await userResolver.Mutation.userLogin(
       null,
-      { input: userTwoInput },
+      { input: loginDataTwo },
       { res },
     );
   });
@@ -56,7 +52,19 @@ describe('Contribution Test Suite', () => {
 
   // create or pay contribution
 
-  it('should test pay contribution and upload bankReceipt', async () => {
+  it('should test pay contribution via mobile money', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'addContribution');
+    const results = await contributionResolver.Mutation.addContribution(
+      null,
+      {
+        input: contributionInputTwo,
+      },
+      { token: userToken.accessToken },
+    );
+    expect(results.dataValues).toHaveProperty('approved');
+  });
+
+  it('should test pay contribution via bank', async () => {
     jest.spyOn(contributionResolver.Mutation, 'addContribution');
     const results = await contributionResolver.Mutation.addContribution(
       null,
@@ -69,17 +77,14 @@ describe('Contribution Test Suite', () => {
     expect(results.dataValues).toHaveProperty('approved');
   });
 
-  // it('should test pay contribution without bank receipt', async () => {
-  //   jest.spyOn(contributionResolver.Mutation, 'addContribution');
-  //   const results = await contributionResolver.Mutation.addContribution(
-  //     null,
-  //     {
-  //       input: contributionInput,
-  //     },
-  //     { token: userToken.accessToken },
-  //   );
-  //   expect(results.dataValues).toHaveProperty('approved');
-  // });
+  it('should upload and get bankReceipt', async () => {
+    jest.spyOn(contributionResolver.Contribution, 'bankReceipt');
+    const results = await contributionResolver.Contribution.bankReceipt(
+      fetchedContribution, null,
+      { token: userToken.accessToken },
+    );
+    expect(results).toBe(null);
+  });
 
   it('should throw an error when trying to pay contribution with bank option without providing the receipt', async () => {
     try {
@@ -110,7 +115,7 @@ describe('Contribution Test Suite', () => {
     expect(results[0].dataValues.userId).toBe(1);
   });
 
-  // approve contribution
+  // // approve contribution
 
   it('should throw an error when a someone in charge of approving tries to approve his or her contribution', async () => {
     try {
@@ -147,7 +152,7 @@ describe('Contribution Test Suite', () => {
     }
   });
 
-  // update contribution
+  // // update contribution
   it('should test update contribution by user', async () => {
     jest.spyOn(contributionResolver.Mutation, 'updateContribution');
     const results = await contributionResolver.Mutation.updateContribution(
@@ -196,7 +201,7 @@ describe('Contribution Test Suite', () => {
     }
   });
 
-  // fetch contributions
+  // // fetch contributions
 
   it('should fetch a single contribution', async () => {
     jest.spyOn(contributionResolver.Query, 'getContribution');
@@ -207,7 +212,6 @@ describe('Contribution Test Suite', () => {
       },
       { token: userToken.accessToken },
     );
-
     expect(contribution.amount).toEqual('10000');
   });
   it('should throw an error when the contribution does not exist', async () => {
@@ -263,6 +267,11 @@ describe('Approve contribution', () => {
       { input: secretaryInput },
       { res },
     );
+    userFourToken = await userResolver.Mutation.userLogin(
+      null,
+      { input: loginDataFour },
+      { res },
+    );
   });
 
   afterAll(async () => {
@@ -273,7 +282,7 @@ describe('Approve contribution', () => {
     );
   });
 
-  it('should test approve contribution', async () => {
+  it('should test approve contribution of userOne', async () => {
     jest.spyOn(contributionResolver.Mutation, 'approveContribution');
     const results = await contributionResolver.Mutation.approveContribution(
       null,
@@ -323,9 +332,50 @@ describe('Approve contribution', () => {
       expect(err.message).toEqual('Contribution not found!');
     }
   });
+
+
+  it('should test pay contribution via bank by userFour', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'addContribution');
+    const results = await contributionResolver.Mutation.addContribution(
+      null,
+      {
+        input: contributionInput,
+        file,
+      },
+      { token: userFourToken.accessToken },
+    );
+    expect(results.dataValues).toHaveProperty('approved');
+  });
+  it('should test approve contribution of userFour', async () => {
+    jest.spyOn(contributionResolver.Mutation, 'approveContribution');
+    const results = await contributionResolver.Mutation.approveContribution(
+      null,
+      {
+        id: 6,
+      },
+      { token: secretaryToken.accessToken },
+    );
+    expect(results.approved).toBe(true);
+  });
+
+  it('should throw an error when userFour tries to update a contribution when it has been already approved', async () => {
+    try {
+      jest.spyOn(contributionResolver.Mutation, 'updateContribution');
+      await contributionResolver.Mutation.updateContribution(
+        null,
+        {
+          id: 6,
+          file,
+        },
+        { token: userFourToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('Sorry, you can not update this contribution. It has been approved');
+    }
+  });
 });
 
-// inactive secretary
+// // inactive secretary
 
 describe('inactive secretary', () => {
   beforeAll(async () => {
@@ -344,7 +394,7 @@ describe('inactive secretary', () => {
     );
     secretaryToken = await userResolver.Mutation.userLogin(
       null,
-      { input: userTwoInput },
+      { input: loginDataTwo },
       { res },
     );
   });

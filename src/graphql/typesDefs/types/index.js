@@ -8,6 +8,7 @@ import { voteTypes } from './vote.types';
 import { votingEventsTypes } from './voteEvent.types';
 import { eventsTypes } from './event.types';
 import { loanTypes } from './loan.types';
+import { fileType } from './file.type';
 
 export const allTypes = {
   userTypes,
@@ -20,4 +21,5 @@ export const allTypes = {
   votingEventsTypes,
   eventsTypes,
   loanTypes,
+  fileType,
 };

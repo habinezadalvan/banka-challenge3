@@ -17,7 +17,8 @@ export const loanTypes = gql`
         rejected: Boolean
         closed: Boolean
         paymentOption: String
-        bankReceipt: String
+        bankReceipts: [File]
+        approvedAt: String
     }
     input LoanInput{
         amount: Int!

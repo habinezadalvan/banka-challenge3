@@ -89,7 +89,7 @@ describe('Loan Test Suite', () => {
     }
   });
 
-  // pay loan
+  // // pay loan
 
   it('should test loan payment', async () => {
     jest.spyOn(loanResolvers.Mutation, 'payLoan');
@@ -101,7 +101,21 @@ describe('Loan Test Suite', () => {
     expect(results.paidAmount).toEqual('120000');
   });
 
-  // approve loan payment
+
+  it('should throw an error when trying to pay more', async () => {
+    try {
+      jest.spyOn(loanResolvers.Mutation, 'payLoan');
+      await loanResolvers.Mutation.payLoan(
+        null,
+        { id: 1, input: { amount: 10000 }, file },
+        { token: userToken.accessToken },
+      );
+    } catch (err) {
+      expect(err.message).toEqual('You can not over pay, you have already paid your loan. We are processing the approval.');
+    }
+  });
+
+  // // approve loan payment
 
   it('should test loan one approval', async () => {
     jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -123,7 +137,7 @@ describe('Loan Test Suite', () => {
     expect(results.paid).toBe(true);
   });
 
-  // loan request
+  // // loan request
 
   it('should test loan request', async () => {
     jest.spyOn(loanResolvers.Mutation, 'addLoan');
@@ -135,7 +149,7 @@ describe('Loan Test Suite', () => {
     expect(results.amount).toEqual('100000');
   });
 
-  // change loan ratings
+  // // change loan ratings
 
   it('should test change loan interest rate by admin', async () => {
     jest.spyOn(loanResolvers.Mutation, 'changeRatings');
@@ -172,7 +186,7 @@ describe('Loan Test Suite', () => {
     );
   });
 
-  // update loan
+  // // update loan
 
   it('should update amount of loan', async () => {
     jest.spyOn(loanResolvers.Mutation, 'modifyLoan');
@@ -238,7 +252,7 @@ describe('Loan Test Suite', () => {
     }
   });
 
-  // fetch a single loan and all loans
+  // // fetch a single loan and all loans
 
   it('should fetch a loan', async () => {
     jest.spyOn(loanResolvers.Query, 'fetchLoan');
@@ -251,12 +265,10 @@ describe('Loan Test Suite', () => {
   });
   it('should fetch a loan owner', async () => {
     jest.spyOn(loanResolvers.Loan, 'user');
-    const results = await loanResolvers.Loan.user(
-      fetchedLoan,
-      null,
-      { token: userTwoToken.accessToken },
-    );
-    expect(results.dataValues.id).toBe(1);
+    const results = await loanResolvers.Loan.user(fetchedLoan, null, {
+      token: userTwoToken.accessToken,
+    });
+    expect(results.id).toBe(1);
   });
 
   it('should fetch all loans', async () => {
@@ -319,31 +331,12 @@ describe('Approve, close, reject, approve loan payment suite', () => {
       await loanResolvers.Mutation.payLoan(
         null,
         {
-          id: 4,
+          id: 2,
           input: {
             amount: 50000,
           },
         },
-        { token: userTwoToken.accessToken },
-      );
-    } catch (err) {
-      expect(err.message).toEqual('Please upload your bank receicpt');
-    }
-  });
-
-  it('should throw an error when trying to pay loan with bank option without providing the receipt', async () => {
-    try {
-      jest.spyOn(loanResolvers.Mutation, 'payLoan');
-      await loanResolvers.Mutation.payLoan(
-        null,
-        {
-          id: 4,
-          input: {
-            amount: 50000,
-            paymentOption: 'bank',
-          },
-        },
-        { token: userTwoToken.accessToken },
+        { token: userToken.accessToken },
       );
     } catch (err) {
       expect(err.message).toEqual('Please upload your bank receicpt');
@@ -369,7 +362,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
       expect(err.message).toEqual('Sorry, you can only pay your own loan!');
     }
   });
-  // approving contribution
+  // // approving contribution
 
   it('should test  approve contribution of loan manager', async () => {
     jest.spyOn(contributionResolver.Mutation, 'approveContribution');
@@ -414,7 +407,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     }
   });
 
-  //
+  // //
   it('should throw an error when a loan manager tries to approve his own loan request', async () => {
     try {
       jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -457,7 +450,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     }
   });
 
-  // pay and approve loan three so that the user can request another loan with short duration
+  // // pay and approve loan three so that the user can request another loan with short duration
 
   it('should throw an error a user tries to pay a loan which is not approved', async () => {
     try {
@@ -499,6 +492,16 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     expect(results.paidAmount).toEqual('212000');
   });
 
+  it('should test loan payment with mobile money', async () => {
+    jest.spyOn(loanResolvers.Mutation, 'payLoan');
+    const results = await loanResolvers.Mutation.payLoan(
+      null,
+      { id: 3, input: { amount: 0, paymentOption: 'mobile' } },
+      { token: userToken.accessToken },
+    );
+    expect(results.id).toBe(3);
+  });
+
   it('should test loan three approval', async () => {
     jest.spyOn(loanResolvers.Mutation, 'updateLoan');
     const results = await loanResolvers.Mutation.updateLoan(
@@ -523,7 +526,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     }
   });
 
-  //
+  // //
   it('should request another loan with a short payment period', async () => {
     jest.spyOn(loanResolvers.Mutation, 'addLoan');
     const results = await loanResolvers.Mutation.addLoan(
@@ -539,7 +542,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     expect(results.amount).toEqual('5000');
   });
 
-  // rejecting a loan
+  // // rejecting a loan
 
   it('should test loan rejection', async () => {
     jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -561,7 +564,7 @@ describe('Approve, close, reject, approve loan payment suite', () => {
     expect(results.rejected).toBe(false);
   });
 
-  // closig a loan
+  // // closig a loan
 
   it('should test loan closure', async () => {
     jest.spyOn(loanResolvers.Mutation, 'updateLoan');
@@ -711,6 +714,18 @@ describe('Can not approve when account is inactive', () => {
       { token: userTwoToken.accessToken },
     );
     expect(results).toBe(true);
+  });
+  it('should get loan bank receipt', async () => {
+    jest.spyOn(loanResolvers.Loan, 'bankReceipts');
+    const loan = {
+      id: 1,
+      amount: 1000,
+      amountToBePaid: 1000,
+    };
+    const results = await loanResolvers.Loan.bankReceipts(loan, null, {
+      token: userTwoToken.accessToken,
+    });
+    expect(results[0].id).toBe(1);
   });
 });
 

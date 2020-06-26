@@ -9,6 +9,7 @@ export const typeDefs = [
   allMutations.userMutations,
   allMutations.contributionMutation,
   allMutations.loanMutations,
+  allMutations.reportMutations,
   allTypes.userTypes,
   allTypes.roleTypes,
   allTypes.positionTypes,
@@ -19,4 +20,5 @@ export const typeDefs = [
   allTypes.votingEventsTypes,
   allTypes.eventsTypes,
   allTypes.loanTypes,
+  allTypes.fileType,
 ];

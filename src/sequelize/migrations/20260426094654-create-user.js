@@ -32,10 +32,6 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: true,
     },
-    avatar: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
     roleId: {
       type: Sequelize.INTEGER,
       allowNull: false,

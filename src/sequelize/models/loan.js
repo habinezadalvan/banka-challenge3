@@ -59,12 +59,13 @@ module.exports = (sequelize, DataTypes) => {
       }),
       defaultValue: 'bank',
     },
-    bankReceipt: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
   }, {});
-  Loan.associate = () => {
+  Loan.associate = (models) => {
+    Loan.hasMany(models.File, {
+      foreignKey: 'loanId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   };
   return Loan;
 };

@@ -26,10 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    avatar: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     accountStatus: {
       type: DataTypes.ENUM({
         values: ['activated', 'disactivated'],
@@ -91,6 +87,11 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
     });
     User.hasMany(models.Event, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    User.hasOne(models.File, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
