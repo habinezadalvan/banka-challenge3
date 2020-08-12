@@ -5,13 +5,13 @@ dotenv.config();
 module.exports.development = {
   dialect: 'postgres',
   seederStorage: 'sequelize',
-  url: process.env.DB_URL,
+  url: process.env.DATABASE_URL,
   logging: false,
 };
 
 module.exports.production = {
   dialect: 'postgres',
-  url: process.env.DB_URL,
+  url: process.env.DATABASE_URL,
   logging: false,
 };
 
