@@ -31,13 +31,11 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-
 app.use('/', router);
 
+server.applyMiddleware({ app });
+
 app.get('/', (req, res) => res.send('Welcome to LIG app...'));
-
-server.applyMiddleware({ app }, '/graphql');
-
 
 verifyDatabaseConnection();
 const port = process.env.PORT || 5050;
