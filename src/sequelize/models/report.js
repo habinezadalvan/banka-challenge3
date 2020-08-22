@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    cover: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    // cover: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true,
+    // },
 
   }, {});
   Report.associate = (models) => {

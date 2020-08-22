@@ -12,7 +12,6 @@ export const reportTypes = gql`
         title: String
         type: ReportOptions
         content: String
-        cover: String
     }
     input ReportInput{
         title: String!

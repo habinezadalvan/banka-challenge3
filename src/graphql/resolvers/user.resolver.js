@@ -111,7 +111,7 @@ export const userResolver = {
     userSavings: async (user, _, { token }) => {
       await decodeToken(token);
       const saving = new Saving({});
-      const res = await saving.findGeneralMethod(user.dataValues.savingId);
+      const res = await saving.findGeneralMethod(user.savingId);
       return res;
     },
     userContributions: async (user, _, { token }) => {
