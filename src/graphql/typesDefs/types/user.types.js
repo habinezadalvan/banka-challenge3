@@ -15,6 +15,7 @@ export const userTypes = gql`
         userSavings: Saving
         accountStatus: String
         userContributions: [Contribution]
+        userLoans: [Loan]
         userReports: [Report]
         userVotes: [Vote]
         userVotingEvents: [VotingEvent]

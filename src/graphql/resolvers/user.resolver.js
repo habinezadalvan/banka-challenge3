@@ -23,6 +23,7 @@ const modelNames = {
   voteEvent: 'VoteEvent',
   report: 'Report',
   vote: 'Vote',
+  loan: 'Loan',
 };
 
 export const userResolver = {
@@ -136,6 +137,12 @@ export const userResolver = {
       await decodeToken(token);
       const voteEvent = new GeneralClass({});
       const res = await voteEvent.findGeneralMethod(user.id, modelNames.voteEvent);
+      return res;
+    },
+    userLoans: async (user, _, { token }) => {
+      await decodeToken(token);
+      const loan = new GeneralClass({});
+      const res = await loan.findGeneralMethod(user.dataValues.id, modelNames.loan);
       return res;
     },
     userEvents: async (user, _, { token }) => {
